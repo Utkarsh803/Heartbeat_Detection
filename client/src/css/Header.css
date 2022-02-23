@@ -1,0 +1,20 @@
+.header{
+  resize: both;
+    position:fixed;
+    display: flex;
+    width: 100%;
+    background-color: #ffffff;
+    height:70px;
+    flex-direction: row;
+    border-radius: 0.1rem;
+    border-bottom: 0.1rem solid rgb(238, 238, 238);
+    margin-bottom: 20px;
+}
+
+ .header img {
+    margin-left: 5%;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    width: 13%;
+    height: auto;
+}
