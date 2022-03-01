@@ -1,3 +1,16 @@
 .homepage{
   display: inline-block; 
 }
+
+.video{
+  display: inline-block;
+  align-items: center;
+  justify-content: center;
+  margin-top: 70px;
+}
+
+.video img {
+  margin: 15px;
+  border: 5px solid rgb(255, 255, 255);
+  max-width: 100%;
+}
