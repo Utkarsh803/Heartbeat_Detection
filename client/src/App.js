@@ -10,8 +10,8 @@ const App = () => {
   return (
     <div className="homepage">
       <div> <Header/></div>
-      <div style={{ marginLeft: window.innerWidth / 2, marginTop: '90px', width: (window.innerWidth / 2) - 20, height: window.innerHeight }}>
-      <Box color="white" bgcolor="darkgrey" p={50}>
+      <div style={{ marginLeft: (window.innerWidth / 2)+ 10, marginTop: '90px', width: (window.innerWidth / 2) - 30, height: window.innerHeight }}>
+      <Box bgcolor="#f4f4f4" boxShadow="5px 5px 5px #b2b2b3" p={50} borderRadius="borderRadius">
       </Box>
       </div>
     </div>
