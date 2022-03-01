@@ -4,6 +4,7 @@ import '../css/Header.css'
 import logo from '../assets/mslogo.jpg'
 
 
+
 const Header = () => {
     // Sticky Menu Area
     useEffect(() => {
@@ -27,6 +28,9 @@ const Header = () => {
       <>
         <header className="header">
         <img src={logo}></img>
+        <button  className="button">
+          Save Data
+        </button>
         </header>
       </>
     );
