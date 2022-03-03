@@ -4,7 +4,7 @@
 
 .glassBox{
   display: inline-block;
-  position: relative;
+  
   background-color: #f4f4f4;
   box-shadow: 5px 5px 5px#b3b3b4;
   flex-direction: row;
@@ -13,4 +13,16 @@
   margin-left: 50vw;
   width: 47.5vw;
   height: 85vh;
+}
+.video{
+  display: inline-block;
+  align-items: center;
+  justify-content: center;
+  margin-top: 70px;
+}
+
+.video img {
+  margin: 15px;
+  border: 5px solid rgb(255, 255, 255);
+  max-width: 100%;
 }
