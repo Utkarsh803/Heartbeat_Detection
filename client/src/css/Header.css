@@ -18,3 +18,16 @@
     width: auto;
     height: auto;
 }
+
+ .button{
+    background-color: #f8fdff;
+    color: #00a1f1;
+    margin-top: 35px;
+    margin-left: 945px;
+    height: 25px;
+    font-size: 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    border-width: 1.2px;
+    border-color: #00a1f1;
+}
