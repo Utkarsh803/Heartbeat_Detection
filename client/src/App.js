@@ -10,7 +10,7 @@ const App = () => {
     <div className="homepage">
       <div><Header/></div>
       <div><Camera/></div>
-      <Box className="glassBox" borderRadius="borderRadius"/>
+      <div><Box className="glassBox" borderRadius="borderRadius"/></div>
     </div>
    );
   };

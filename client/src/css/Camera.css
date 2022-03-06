@@ -1,8 +1,9 @@
 .camera{
     resize: both;
+    display: inline-block;
     margin-top: 90px;
+    margin-left: 10px;
+    margin-right: 51vw;
     height: 90vh;
-    width: 47.5vw;
-    height: 85vh;
     border: 5px solid rgb(255, 255, 255);
 }

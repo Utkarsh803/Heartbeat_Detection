@@ -11,7 +11,7 @@ const Camera = () => {
 
     const getVideo = () => {
       navigator.mediaDevices
-        .getUserMedia({ video: {} })
+        .getUserMedia({ audio: false, video: {width:(window.innerHeight), height: (window.innerHeight)} })
         .then(stream => {
           let video = videoRef.current;
           video.srcObject = stream;
@@ -23,7 +23,9 @@ const Camera = () => {
     }
     return(
         <div classname="camera">
-            <video ref={videoRef}/>
+            <video 
+              ref={videoRef}
+            />
         </div>
     );
 };
