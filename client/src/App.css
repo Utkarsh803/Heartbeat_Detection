@@ -13,3 +13,18 @@
   width: 47.5vw;
   height: 85vh;
 }
+
+.video{
+  display: inline-block;
+  align-items: center;
+  justify-content: center;
+  margin-top: 6.5%;
+  margin-left: 1%;
+}
+
+.video img {
+  width: fit-content;
+  height: fit-content;
+  max-height: 100vh;
+  max-width: 100vh;
+}
