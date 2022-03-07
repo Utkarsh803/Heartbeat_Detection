@@ -11,7 +11,7 @@ const App = () => {
       <div><Header/></div>
       <div className="video">
       <img
-        src="http://127.0.0.1:3001/video_feed"
+        src="http://127.0.0.1:3001/video"
         alt="Video"
       />
       </div>
