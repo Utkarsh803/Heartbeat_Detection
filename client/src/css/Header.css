@@ -19,15 +19,24 @@
     height: auto;
 }
 
- .button{
-    background-color: #f8fdff;
-    color: #00a1f1;
-    margin-top: 35px;
-    margin-left: 945px;
-    height: 25px;
-    font-size: 14px;
-    border-radius: 12px;
-    cursor: pointer;
-    border-width: 1.2px;
-    border-color: #00a1f1;
+.header button {
+ margin-top: 0.85%;
+  margin-left:auto;
+  margin-right: 5%;
+  height: 70%;
+  min-width: 10%;
+  background-color:#0067b8;
+  border-color: #0067b8;
+  border: none;
+  text-align: center;
+  overflow: hidden;
+  vertical-align: middle;
+  touch-action: manipulation;
+  cursor: pointer;
+  color: #ffffff;
+}
+
+.header button:hover{
+  text-decoration: underline;
+  text-underline-position:below;
 }
