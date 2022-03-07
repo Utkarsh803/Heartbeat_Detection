@@ -15,8 +15,8 @@ const App = () => {
         alt="Video"
       />
       </div>
-      <div><Box className="glassBox" borderRadius="borderRadius"/></div>
-    </div>
+      <div className="glassBox"><Box></Box></div>
+      </div>
    );
   };
 
