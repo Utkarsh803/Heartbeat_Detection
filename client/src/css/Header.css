@@ -20,23 +20,27 @@
 }
 
 .header button {
- margin-top: 0.85%;
-  margin-left:auto;
+  margin-top: 2.5%;
+  margin-left: 950px;
   margin-right: 5%;
-  height: 70%;
-  min-width: 10%;
-  background-color:#0067b8;
+  height: 40%;
+  min-width: 7%;
+  background-color:#ffffff;
   border-color: #0067b8;
-  border: none;
+  border-radius: 8px;
+  outline: 3px;
   text-align: center;
   overflow: hidden;
   vertical-align: middle;
   touch-action: manipulation;
   cursor: pointer;
-  color: #ffffff;
+  color: #0067b8;
 }
 
 .header button:hover{
-  text-decoration: underline;
-  text-underline-position:below;
+  border-color: #0067b8;
+  border-radius: 8px;
+  outline: 3px;
+  color: #0067b8;
+  background-color: #ebf0f5;
 }
