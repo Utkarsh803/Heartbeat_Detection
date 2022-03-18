@@ -2,6 +2,9 @@ import React, {Component, useState, useEffect} from "react";
 import {useContext} from 'react';
 import '../css/Header.css'
 import logo from '../assets/mslogo.jpg'
+import '../css/CameraToggle.scss'
+import CameraToggle from "./CameraToggle";
+
 
 
 
@@ -31,6 +34,7 @@ const Header = () => {
         <button  className="button">
           Save Data
         </button>
+        <camera-toggle className="camera-toggle"><CameraToggle></CameraToggle></camera-toggle>
         </header>
       </>
     );
