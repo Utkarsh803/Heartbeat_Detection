@@ -1,19 +1,21 @@
 import React from "react";
 import Navbar from "react-bootstrap/Navbar";
-import { uisIsAuthenticated } from "@azure/msal-react";
-import { signINButton } from "./SignInButton";
+import {useIsAuthenticated } from "@azure/msal-react";
+import { SignInButton } from "./SignInButton";
+
+/**
+ * Renders the navbar component with a sign-in or sign-out button depending on whether or not a user is authenticated
+ * @param props 
+ */
 
 export const PageLayout = (props) => {
   const isAuthenticated = useIsAuthenticated();
   return(
     <>
-      <Navbar bg="primary" variant="dark">
+        { isAuthenticated ? <a></a> : <Navbar bg="primary" variant="dark">
         <a className="navbar-brand" href="/">Test</a>
-        { isAuthenticated ? <span>Signed In</span> : <SignInButton /> }
-      </Navbar>
-      <h5><center>This is a test</center></h5>
-      <br />
-      <br />
+        <SignInButton /> 
+       </Navbar> }
       {props.children}
     </>
   );

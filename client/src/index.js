@@ -9,12 +9,12 @@ import { MsalProvider } from "@azure/msal-react";
 import { msalConfig } from "./authConfig";
 
 const msalInstance = new PublicClientApplication(msalConfig);
+//<MsalProvider instance={msalInstance}>
+//</MsalProvider>
 
 ReactDOM.render(
-  <React.StrictMode>
-    <MsalProvider instance={msalInstance}>
+  <React.StrictMode> 
     <App />
-    </MsalProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
