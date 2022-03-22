@@ -1,5 +1,7 @@
 # returns the 3 separate colour channels of the image
 import cv2
+from scipy import signal
+
 
 def rgb_split(img):
     red_channel = img[:, :, 2]
@@ -7,6 +9,7 @@ def rgb_split(img):
     green_channel = img[:, :, 1]
 
     return red_channel, green_channel, blue_channel
+
 
 # returns the average values of the separate colour channels
 def calc_avg_rgb(img):
@@ -30,3 +33,11 @@ def calc_avg_rgb(img):
 
     return red, green, blue
 
+
+def sum_rgb_val(red, green, blue):
+    return red + green + blue
+
+
+def detrend_signal(colour_signal):
+    signal.detrend(colour_signal, -1, 'linear', 0, True)
+    return colour_signal
