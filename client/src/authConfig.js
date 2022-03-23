@@ -12,7 +12,7 @@ import { LogLevel } from "@azure/msal-browser";
  */
 export const msalConfig = {
     auth: {
-        clientId: "client_ID",
+        clientId: "Id",
         authority: "Authority",
         redirectUri: "http://localhost:3000/"
     },
@@ -60,5 +60,5 @@ export const loginRequest = {
  * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/resources-and-scopes.md
  */
 export const graphConfig = {
-    graphMeEndpoint: "endpoint/v1.0/me"
+    graphMeEndpoint:  "endPoint/v1.0/me"
 };

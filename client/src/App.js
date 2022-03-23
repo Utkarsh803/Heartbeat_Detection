@@ -14,9 +14,9 @@ import { callMsGraph } from "./graph";
 
 const App = () => {
   return (
-//    <PageLayout>
-      <div>
-      <a>
+<div>
+    <AuthenticatedTemplate>
+  <div>
         <div className="homepage">
           <div><Header/></div>
           <div className="video">
@@ -27,9 +27,23 @@ const App = () => {
           </div>
           <div className="glassBox"><Box></Box></div>
         </div>
-      </a>
             </div>
-//    </PageLayout>
+            </AuthenticatedTemplate>
+            <UnauthenticatedTemplate>
+            <div>
+             <div className="homepage">
+               <div><Header/></div>
+               <div className="video">
+               <img
+                 src="http://127.0.0.1:3001/video_feed"
+                 alt="Video"
+               />
+               </div>
+               <div className="glassBox"><Box></Box></div>
+             </div>
+                 </div>   
+            </UnauthenticatedTemplate>
+            </div>       
    );
   };
 
