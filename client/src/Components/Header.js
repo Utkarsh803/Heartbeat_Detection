@@ -8,8 +8,16 @@ import { callMsGraph } from "../graph";
 import { ProfileData } from "./ProfileData";
 import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from "@azure/msal-react";
 import { loginRequest } from "../authConfig";
+import {useIsAuthenticated } from "@azure/msal-react";
+import { SignInButton } from "./SignInButton";
+import { SignOutButton } from "./SignOutButton";
 
-const Header = () => {
+
+
+
+const Header = (props) => {
+  
+  const isAuthenticated = useIsAuthenticated();
     // Sticky Menu Area
     useEffect(() => {
       window.addEventListener("scroll", isSticky);
@@ -51,7 +59,7 @@ function RequestProfileData() {
 
   return (
       <>
-          <span>Welcome {name}</span>
+          <div>Welcome {name}</div>
       </>
   );
 };
@@ -59,12 +67,16 @@ function RequestProfileData() {
 
     return (
       <>
-        <header className="header">
+ <header className="header">
         <img src={logo}></img>
-        <div className="username"><ProfileContent /></div>
-        <button  className="button">
-          Sign Out
-        </button>
+        {isAuthenticated ? 
+        <div className="profile"><div className="username"><ProfileContent/></div>
+        <div className="signOut"><SignOutButton/></div></div>
+        :
+        <div className="profile"><div className="username">Sign In to save this data</div>
+        <div className="signOut"><SignInButton/></div></div>
+       // <div className="signIn"><SignInButton /></div>
+        }
         <camera-toggle className="camera-toggle"><CameraToggle></CameraToggle></camera-toggle>
         </header>
       </>
