@@ -1,6 +1,8 @@
 # returns the 3 separate colour channels of the image
 import cv2
+import numpy as np
 from scipy import signal
+from scipy.fftpack import fft, fftshift
 
 
 def rgb_split(img):
@@ -39,5 +41,13 @@ def sum_rgb_val(red, green, blue):
 
 
 def detrend_signal(colour_signal):
-    signal.detrend(colour_signal, -1, 'linear', 0, True)
-    return colour_signal
+    new_signal = signal.detrend(colour_signal)
+    return new_signal
+
+
+def hamming_window(detr_signal):
+    window = signal.hamming(len(detr_signal))
+    data = np.zeros(len(detr_signal))
+    for i in range(len(detr_signal)):
+        data[i] = detr_signal[i] * window[i]
+    return data
