@@ -1,9 +1,10 @@
 from flask import Flask,render_template,Response
 import cv2
-from azure import VideoCamera
+from main import camera
 
 app=Flask(__name__)
-VC=VideoCamera()
+VC=camera()
+
 
 camera2=cv2.VideoCapture(0)
 def generate_frames():
@@ -31,7 +32,7 @@ def video():
 
 def gen(camera):
     while True:
-        frame = camera.get_frame()
+        frame = camera.face_detection()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
                
