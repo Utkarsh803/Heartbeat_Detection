@@ -2,6 +2,7 @@
 import cv2
 import numpy as np
 from scipy import signal
+import neurokit2 as nk
 from scipy.fftpack import fft, fftshift
 
 
@@ -59,9 +60,24 @@ def sum_rgb_val(red, green, blue):
     return red + green + blue
 
 
+def adv_detrend_signal(colour_signal):
+    """
+    this function returns the detrended signal over a time period T which will be used to calculate the heart rate
+    it is done using an advanced detrending function with more customisable parameters
+
+    :param colour_signal: this is an array of averaged colour values over a time period
+    :return: this returns the detrended signal
+    """
+
+    new_signal = nk.signal_detrend(colour_signal, order=0, method="loess", alpha=10, window=0.059)
+    return new_signal
+
+
 def detrend_signal(colour_signal):
     """
     this function returns the detrended signal over a time period T which will be used to calculate the heart rate
+    it is done using a simple detrending library
+
 
     :param colour_signal: this is an array of averaged colour values over a time period
     :return: this returns the detrended signal
