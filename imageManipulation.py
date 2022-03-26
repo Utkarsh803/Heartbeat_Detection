@@ -4,6 +4,8 @@ import numpy as np
 from scipy import signal
 import neurokit2 as nk
 from scipy.fftpack import fft, fftshift
+from sklearn.decomposition import FastICA
+
 
 
 def rgb_split(img):
@@ -101,3 +103,22 @@ def hamming_window(detr_signal):
     for i in range(len(detr_signal)):
         data[i] = detr_signal[i] * window[i]
     return data
+
+def ica(data):
+    ica=FastICA(n_components=data.shape[1])
+    ica_signal=ica.fit_transform(data)
+    return ica_signal
+
+def fft(data):
+    fft_signal = np.fft.rfft(data, n=8 * len(data))
+    return fft_signal
+
+def get_spectrum(data, fps ):
+    spectrum = np.abs(data)
+    freqs = np.linspace(0, fps * 60, len(spectrum))
+    idx = np.where((freqs >= 60) & (freqs <= 240))
+    freqs = freqs[idx]
+    spectrum = spectrum[idx]
+    spectrum /= np.max(spectrum)
+    spectrum **= 2
+    return freqs, spectrum

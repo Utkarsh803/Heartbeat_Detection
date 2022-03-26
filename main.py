@@ -51,6 +51,11 @@ class camera(object):
         return jpeg.tobytes()
             #break
 
+          
+    def get_fps2(self):
+        fps = self.cap.get(cv.CAP_PROP_FPS)
+        return fps
+
 
     def detectAndDisplay(self):
         self.frame_gray = cv.cvtColor(self.frame, cv.COLOR_BGR2GRAY)
@@ -59,14 +64,35 @@ class camera(object):
         faces = self.face_cascade.detectMultiScale(self.frame_gray)
         for (x,y,w,h) in faces:
             center = (x + w//2, y + h//2)
-            self.frame = cv.ellipse(self.frame, center, (w//2, h//2), 0, 0, 360, (255, 0, 255), 4)
+            #self.frame = cv.ellipse(self.frame, center, (w//2, h//2), 0, 0, 360, (255, 0, 255), 4)
             faceROI = self.frame_gray[y:y+h,x:x+w]
+            startpointX=(x+w)-x
+            areaNeedX=0.50*startpointX
+            cutareaX=startpointX-areaNeedX
+            partitionX=cutareaX/2
+            startX=x+int(partitionX)
+            endX=(x+w)-int(partitionX)
+
+
+            startpointY=(y+h)-y
+            areaNeedY=0.90*startpointY
+            cutareaY=startpointX-areaNeedY
+            partitionY=cutareaY/2
+            startY=y+int(partitionY)
+            endY=(y+h)-int(partitionY)
+
+            totalHeight=(y+h)-y
+            firstLine=0.20*totalHeight
+            secondLine=0.55*totalHeight
+            for x in range(0,5):
+                cv.rectangle(self.frame, (startX, startY), (endX,y+int(firstLine)), (255, 0, 0), 2)
+
             #-- In each face, detect eyes
-            eyes = self.eyes_cascade.detectMultiScale(faceROI)
-            for (x2,y2,w2,h2) in eyes:
-                eye_center = (x + x2 + w2//2, y + y2 + h2//2)
-                radius = int(round((w2 + h2)*0.25))
-                self.frame = cv.circle(self.frame, eye_center, radius, (255, 0, 0 ), 4)
+            #eyes = self.eyes_cascade.detectMultiScale(faceROI)
+            #for (x2,y2,w2,h2) in eyes:
+            #    eye_center = (x + x2 + w2//2, y + y2 + h2//2)
+            #    radius = int(round((w2 + h2)*0.25))
+            #    self.frame = cv.circle(self.frame, eye_center, radius, (255, 0, 0 ), 4)
         cv.imshow('Capture - Face detection', self.frame)
         return self.frame # in the form numpy.ndarray
 
