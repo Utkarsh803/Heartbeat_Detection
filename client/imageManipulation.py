@@ -6,6 +6,12 @@ from scipy.fftpack import fft, fftshift
 
 
 def rgb_split(img):
+    """
+    this function returns the three separated colour channels of an image or a frame
+
+    :param img: takes in a single frame of a video stream or an image
+    :return: extracts all three colour channels of the image / frame
+    """
     red_channel = img[:, :, 2]
     blue_channel = img[:, :, 0]
     green_channel = img[:, :, 1]
@@ -15,6 +21,12 @@ def rgb_split(img):
 
 # returns the average values of the separate colour channels
 def calc_avg_rgb(img):
+    """
+    this function returns the average colour value of the image or frame
+
+    :param img: takes in an image or frame of video
+    :return: the average value of the three colour channels
+    """
     red_ch, green_ch, blue_ch = rgb_split(img)
 
     red = 0
@@ -37,15 +49,37 @@ def calc_avg_rgb(img):
 
 
 def sum_rgb_val(red, green, blue):
+    """
+    :param red: the red value of an image
+    :param green: the green value
+    :param blue:  the blue value
+    :return: the summation of all three values
+    """
+
     return red + green + blue
 
 
 def detrend_signal(colour_signal):
+    """
+    this function returns the detrended signal over a time period T which will be used to calculate the heart rate
+
+    :param colour_signal: this is an array of averaged colour values over a time period
+    :return: this returns the detrended signal
+    """
+
     new_signal = signal.detrend(colour_signal)
     return new_signal
 
 
 def hamming_window(detr_signal):
+    """
+    this function returns the detrended average colour signal after being passed through a hamming window
+    in order to reduce the error of the signal to get a more accurate original signal
+
+    :param detr_signal: this is the detrended signal
+    :return: the signal after being passed through a hamming window
+    """
+
     window = signal.hamming(len(detr_signal))
     data = np.zeros(len(detr_signal))
     for i in range(len(detr_signal)):
