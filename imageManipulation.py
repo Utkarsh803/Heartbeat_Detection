@@ -88,6 +88,8 @@ def detrend_signal(colour_signal):
     new_signal = signal.detrend(colour_signal)
     return new_signal
 
+def z_normalize(data):
+    return (data - data.mean(axis=0)) / data.std(axis=0)
 
 def hamming_window(detr_signal):
     """
