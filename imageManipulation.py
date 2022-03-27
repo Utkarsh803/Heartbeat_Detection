@@ -51,6 +51,35 @@ def calc_avg_rgb(img):
 
     return red, green, blue
 
+def calc_avg_rgb(img, rgb_arr):
+    """
+    this function returns the average colour value of the image or frame
+
+    :param img: takes in an image or frame of video
+    :return: the average value of the three colour channels
+    """
+    red_ch, green_ch, blue_ch = rgb_split(img)
+    print(red_ch)
+
+    red = 0
+    blue = 0
+    green = 0
+    count = 0
+
+    for i in range(red_ch.shape):
+        for j in range(red_ch.shape[i]):
+            red = red + red_ch[i][j]
+            blue = blue + blue_ch[i][j]
+            green = green + green_ch[i][j]
+            count = count + 1
+
+    red = red / count
+    blue = blue / count
+    green = green / count
+
+
+    return red, green, blue
+
 
 def sum_rgb_val(red, green, blue):
     """
@@ -83,14 +112,26 @@ def detrend_signal(colour_signal):
 
 
     :param colour_signal: this is an array of averaged colour values over a time period
-    :return: this returns the detrended signal
+            it is a 2d array of the 3 colour channels
+    :return: this returns the detrended signal (a 2d array)
     """
 
     new_signal = signal.detrend(colour_signal)
     return new_signal
 
+# taking in a 2d array o fthe three colour channels rgb we calculate the mean and sd and normalise the data
 def z_normalize(data):
-    return (data - data.mean(axis=0)) / data.std(axis=0)
+    """
+        this function nomralises the colour channels around zero
+
+        :param data; the 3 colour channels over time t
+        :return: Xi = (Yi - MUi)/SDi where i = R,G,B signal channels i.e the normalised values of the colour
+                channels
+        """
+    new_data = [((data[0] - data[0].mean(axis=0)) / data[0].std(axis=0)),
+                ((data[1] - data[1].mean(axis=0)) / data[1].std(axis=0)),
+                ((data[2] - data[2].mean(axis=0)) / data[2].std(axis=0))]
+    return new_data
 
 def hamming_window(detr_signal):
     """
