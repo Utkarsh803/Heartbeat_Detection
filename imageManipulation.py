@@ -51,35 +51,6 @@ def calc_avg_rgb(img):
 
     return red, green, blue
 
-def calc_avg_rgb(img, rgb_arr):
-    """
-    this function returns the average colour value of the image or frame
-
-    :param img: takes in an image or frame of video
-    :return: the average value of the three colour channels
-    """
-    red_ch, green_ch, blue_ch = rgb_split(img)
-    print(red_ch)
-
-    red = 0
-    blue = 0
-    green = 0
-    count = 0
-
-    for i in range(red_ch.shape):
-        for j in range(red_ch.shape[i]):
-            red = red + red_ch[i][j]
-            blue = blue + blue_ch[i][j]
-            green = green + green_ch[i][j]
-            count = count + 1
-
-    red = red / count
-    blue = blue / count
-    green = green / count
-
-
-    return red, green, blue
-
 
 def sum_rgb_val(red, green, blue):
     """
