@@ -20,8 +20,13 @@ class camera(object):
     y = 0
     firstLine = 0
     endX = 0
-    rgb_arr = [[], [], []]
-    red, green, blue = 0
+    rgb_arr = []
+    red_arr=[]
+    blue_arr=[]
+    green_arr=[]
+    red=0
+    green=0
+    blue = 0
 
     def __init__(self):
         self.parser = argparse.ArgumentParser(description='Code for Cascade Classifier tutorial.')
@@ -53,10 +58,17 @@ class camera(object):
         self.endX = 0
         self.firstLine = 0
         self.arr = np.full(
-            shape=50,
+            shape=(3,50),
             fill_value=0,
             dtype=np.int
         )
+        self.rgb_arr = []
+        self.red_arr=[]
+        self.green_arr=[]
+        self.blue_arr = []
+        self.red=0
+        self.green=0
+        self.blue = 0
         self.framecount = 0
         self.camera_device = self.args.camera
         # -- 2. Read the video stream
@@ -113,18 +125,26 @@ class camera(object):
         self.ROI = self.frame[self.startY:self.y + int(self.firstLine), self.startX:self.endX]
         # r,b,g=imageManipulation.calc_avg_rgb(self.ROI)
         # rgb=imageManipulation.sum_rgb_val(r,g,b)
-        rgb = imageManipulation.get_means(self.ROI)
-        red, green, blue = imageManipulation.calc_avg_rgb(self.ROI)
-        self.rgb_arr[0].append(red)
-        self.rgb_arr[1].append(green)
-        self.rgb_arr[2].append(blue)
-        print("rgb", rgb)
+        #rgb = imageManipulation.get_means(self.ROI)
+        self.red, self.green, self.blue = imageManipulation.get_means(self.ROI)
+        #self.rgb_arr[0].append(red)
+        #self.rgb_arr[1].append(green)
+        #self.rgb_arr[2].append(blue)
+        print(self.red)
+        self.red_arr.append(self.red)
+        self.green_arr.append(self.green)
+        self.blue_arr.append(self.blue)
+        print("red", self.red_arr)
         print(self.framecount)
-        self.arr = np.insert(self.arr, self.framecount, rgb)
+        #self.arr = np.insert(self.arr, self.framecount, rgb)
         if self.framecount == 50:
+            self.rgb_arr=np.matrix([self.red_arr,self.blue_arr,self.green_arr])
             print("Array", self.rgb_arr)
             heartrate = self.get_heartrate(self.rgb_arr)
             print("--------------------Heartrate----------------", heartrate)
+            self.red_arr.clear()
+            self.blue_arr.clear()
+            self.green_arr.clear()
             self.rgb_arr.clear()
             self.framecount = 0
             # -- In each face, detect eyes

@@ -71,9 +71,16 @@ def adv_detrend_signal(colour_signal):
     :param colour_signal: this is an array of averaged colour values over a time period
     :return: this returns the detrended signal
     """
+    row0=colour_signal[0]
+    row1=colour_signal[1]
+    row2=colour_signal[2]
 
-    new_signal = nk.signal_detrend(colour_signal, order=0, method="loess", alpha=1, window=0.059)
-    return new_signal
+    new_signal0 = nk.signal_detrend(row0, order=0, method="loess", alpha=1, window=0.059)
+    new_signal1 = nk.signal_detrend(row1, order=0, method="loess", alpha=1, window=0.059)
+    new_signal2 = nk.signal_detrend(row2, order=0, method="loess", alpha=1, window=0.059)
+
+    
+    return new_signal0,new_signal1,new_signal2
 
 
 def detrend_signal(colour_signal):
@@ -85,10 +92,17 @@ def detrend_signal(colour_signal):
     :param colour_signal: this is an array of averaged colour values over a time period
             it is a 2d array of the 3 colour channels
     :return: this returns the detrended signal (a 2d array)
-    """
 
-    new_signal = signal.detrend(colour_signal)
-    return new_signal
+    """
+    row0=colour_signal[0]
+    row1=colour_signal[1]
+    row2=colour_signal[2]
+
+    new_signal0 = signal.detrend(colour_signal[0])
+    new_signal1 = signal.detrend(colour_signal[1])
+    new_signal2 = signal.detrend(colour_signal[2])
+
+    return new_signal0,new_signal1,new_signal2
 
 # taking in a 2d array o fthe three colour channels rgb we calculate the mean and sd and normalise the data
 def z_normalize(data):
@@ -152,7 +166,7 @@ def fft(data):
 
 
 def get_means(subframe):
-    v1 = np.mean(subframe[:, :, 0])
-    v2 = np.mean(subframe[:, :, 1])
-    v3 = np.mean(subframe[:, :, 2])
-    return (v1 + v2 + v3) / 3
+    v1 = np.mean(subframe[:, :, 2])
+    v2 = np.mean(subframe[:, :, 0])
+    v3 = np.mean(subframe[:, :, 1])
+    return v1 , v2,  v3 
