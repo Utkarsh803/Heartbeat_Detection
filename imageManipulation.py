@@ -31,6 +31,7 @@ def calc_avg_rgb(img):
     :return: the average value of the three colour channels
     """
     red_ch, green_ch, blue_ch = rgb_split(img)
+    print(red_ch)
 
     red = 0
     blue = 0
@@ -71,7 +72,7 @@ def adv_detrend_signal(colour_signal):
     :return: this returns the detrended signal
     """
 
-    new_signal = nk.signal_detrend(colour_signal, order=0, method="loess", alpha=10, window=0.059)
+    new_signal = nk.signal_detrend(colour_signal, order=0, method="loess", alpha=1, window=0.059)
     return new_signal
 
 
@@ -107,20 +108,39 @@ def hamming_window(detr_signal):
     return data
 
 def ica(data):
-    ica=FastICA(n_components=data.shape[1])
+    ica=FastICA(len(data))
     ica_signal=ica.fit_transform(data)
     return ica_signal
+
+def bandpassFilter(data, freq=[0.7, 4.5], window='hamming'):    
+    filt_signal = signal.firwin(128, freq, window=window, pass_zero=False, scale=False)
+    return signal.lfilter(filt_signal, 1, data)
+
+
+def select_component(components):
+        largest_psd_peak = -1e10
+        best_component = None
+        for i in range(components.shape[1]):
+            x = components[:,i]
+            x = bandpassFilter(x, freq=[0.7, 4.5], window='hamming')
+            #fft = np.fft.rfft(x)
+            #spectrum = np.abs(fft)
+            #freqs = np.linspace(0, 1.5 * 60, len(spectrum))
+            f, psd = signal.periodogram(x)
+            if max(psd) > largest_psd_peak:
+                largest_psd_peak = max(psd)
+                best_component = components[:,i]             
+        return x
+
 
 def fft(data):
     fft_signal = np.fft.rfft(data, n=8 * len(data))
     return fft_signal
 
-def get_spectrum(data, fps ):
-    spectrum = np.abs(data)
-    freqs = np.linspace(0, fps * 60, len(spectrum))
-    idx = np.where((freqs >= 60) & (freqs <= 240))
-    freqs = freqs[idx]
-    spectrum = spectrum[idx]
-    spectrum /= np.max(spectrum)
-    spectrum **= 2
-    return freqs, spectrum
+
+
+def get_means(subframe):
+    v1 = np.mean(subframe[:, :, 0])
+    v2 = np.mean(subframe[:, :, 1])
+    v3 = np.mean(subframe[:, :, 2])
+    return (v1 + v2 + v3) / 3

@@ -1,6 +1,8 @@
 #from _future_ import print_function
 import cv2 as cv
 import argparse
+import imageManipulation
+import numpy as np
 
 
 
@@ -12,6 +14,15 @@ class camera(object):
     args = ''
     camera_device=''
     cap=''
+    ROI=None
+    arr=[]
+    startX=0
+    startY=0
+    y=0
+    firstLine=0
+    endX=0
+
+
     def __init__(self):
         self.parser = argparse.ArgumentParser(description='Code for Cascade Classifier tutorial.')
         #parser.add_argument('--face_cascade', help='Path to face cascade.', default='data/haarcascades/haarcascade_frontalface_alt.xml')
@@ -33,6 +44,18 @@ class camera(object):
         if not self.eyes_cascade.load(cv.samples.findFile(self.eyes_cascade_name)):
             print('--(!)Error loading eyes cascade')
             exit(0)
+        self.ROI=None
+        self.startX=0
+        self.startY=0
+        self.y=0
+        self.endX=0
+        self.firstLine=0
+        self.arr= np.full(
+  shape=50,
+  fill_value=0,
+  dtype=np.int
+)
+        self.framecount=0
         self.camera_device = self.args.camera
         #-- 2. Read the video stream
         self.cap = cv.VideoCapture(self.camera_device)
@@ -63,6 +86,7 @@ class camera(object):
         #-- Detect faces
         faces = self.face_cascade.detectMultiScale(self.frame_gray)
         for (x,y,w,h) in faces:
+            self.y=y
             center = (x + w//2, y + h//2)
             #self.frame = cv.ellipse(self.frame, center, (w//2, h//2), 0, 0, 360, (255, 0, 255), 4)
             faceROI = self.frame_gray[y:y+h,x:x+w]
@@ -70,23 +94,35 @@ class camera(object):
             areaNeedX=0.50*startpointX
             cutareaX=startpointX-areaNeedX
             partitionX=cutareaX/2
-            startX=x+int(partitionX)
-            endX=(x+w)-int(partitionX)
+            self.startX=x+int(partitionX)
+            self.endX=(x+w)-int(partitionX)
 
 
             startpointY=(y+h)-y
             areaNeedY=0.90*startpointY
             cutareaY=startpointX-areaNeedY
             partitionY=cutareaY/2
-            startY=y+int(partitionY)
+            self.startY=y+int(partitionY)
             endY=(y+h)-int(partitionY)
 
             totalHeight=(y+h)-y
-            firstLine=0.20*totalHeight
+            self.firstLine=0.20*totalHeight
             secondLine=0.55*totalHeight
-            for x in range(0,5):
-                cv.rectangle(self.frame, (startX, startY), (endX,y+int(firstLine)), (255, 0, 0), 2)
-
+            cv.rectangle(self.frame, (self.startX+10, self.startY+10), (self.endX+10,y+int(self.firstLine)+10), (255, 0, 0), 2)
+        self.framecount=self.framecount+1
+        self.ROI=self.frame[self.startY:self.y+int(self.firstLine),self.startX:self.endX]
+        #r,b,g=imageManipulation.calc_avg_rgb(self.ROI)
+        #rgb=imageManipulation.sum_rgb_val(r,g,b)
+        rgb=imageManipulation.get_means(self.ROI)
+        print("rgb",rgb)
+        print(self.framecount)
+        self.arr=np.insert(self.arr,self.framecount,rgb)       
+        if self.framecount==50:
+            print("Array",self.arr)
+            heartrate=self.get_heartrate(self.arr)
+            print("--------------------Heartrate----------------",heartrate)
+            self.arr.clear()
+            self.framecount=0
             #-- In each face, detect eyes
             #eyes = self.eyes_cascade.detectMultiScale(faceROI)
             #for (x2,y2,w2,h2) in eyes:
@@ -97,6 +133,26 @@ class camera(object):
         return self.frame # in the form numpy.ndarray
 
 # END OF CODE
+
+    def get_heartrate(self,rgb):
+        detrend_signal=imageManipulation.detrend_signal(rgb)
+        print("dtsgnl",detrend_signal)
+        normalized_signal=imageManipulation.z_normalize(detrend_signal)
+        print("norm",normalized_signal)
+        ica=imageManipulation.ica(normalized_signal)
+        print("ica",ica)
+        bandpassfilter_signal=imageManipulation.select_component(ica)
+        return  bandpassfilter_signal
+
+
+cam=camera()
+while True:
+    cam.face_detection()
+    #print(cam.frame)
+    print("--------------------------------")
+
+
+
 
 
 
