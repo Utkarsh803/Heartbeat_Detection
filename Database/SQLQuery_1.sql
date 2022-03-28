@@ -1,7 +1,6 @@
-
-CREATE TABLE HeartbeatInfo (
-  user_id INT(11) NOT NULL,
-  user_name varchar(50) NOT NULL,
-  user_hb INTEGER(11) NOT NULL,
-  PRIMARY KEY (user_id)
+CREATE TABLE hbinfo (
+  user_id INT PRIMARY KEY,
+  user_Name NVARCHAR(128) NOT NULL,
+  user_hb INT NOT NULL,
 ) 
+
