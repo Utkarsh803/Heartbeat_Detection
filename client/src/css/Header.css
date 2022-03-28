@@ -20,7 +20,7 @@
 }
 
 .header button {
-  display: inline-block;
+  display: block;
   float: right;
   margin-left: auto;
   margin-right: 10%;
@@ -32,7 +32,6 @@
   outline: 3px;
   text-align: center;
   overflow: hidden;
-  vertical-align: middle;
   touch-action: manipulation;
   cursor: pointer;
   color: #0067b8;

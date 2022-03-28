@@ -9,6 +9,7 @@ import { loginRequest } from "./authConfig";
 import Button from "react-bootstrap/Button";
 import { ProfileData } from "./Components/ProfileData";
 import { callMsGraph } from "./graph";
+import CameraToggle from './Components/CameraToggle';
 
 
 
@@ -24,6 +25,9 @@ const App = () => {
             src="http://127.0.0.1:3001/video"
             alt="Video"
           />
+          <div className="camera-toggle">
+            <div className="toggle"></div>
+            <CameraToggle/></div>
           </div>
           <div className="glassBox"><Box></Box></div>
         </div>
