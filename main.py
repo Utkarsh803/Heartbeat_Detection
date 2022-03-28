@@ -27,6 +27,7 @@ class camera(object):
     red=0
     green=0
     blue = 0
+    heartrate=0
 
     def __init__(self):
         self.parser = argparse.ArgumentParser(description='Code for Cascade Classifier tutorial.')
@@ -52,6 +53,7 @@ class camera(object):
             print('--(!)Error loading eyes cascade')
             exit(0)
         self.ROI = None
+        self.heartrate=72
         self.startX = 0
         self.startY = 0
         self.y = 0
@@ -73,6 +75,12 @@ class camera(object):
         self.camera_device = self.args.camera
         # -- 2. Read the video stream
         self.cap = cv.VideoCapture(self.camera_device)
+
+    def get_variables(self):
+        result=self.heartrate
+        return str(result)
+
+
 
     def face_detection(self):
         if not self.cap.isOpened:
@@ -130,22 +138,22 @@ class camera(object):
         #self.rgb_arr[0].append(red)
         #self.rgb_arr[1].append(green)
         #self.rgb_arr[2].append(blue)
-        print(self.red)
+        #print(self.red)
         self.red_arr.append(self.red)
         self.green_arr.append(self.green)
         self.blue_arr.append(self.blue)
-        print("red", self.red_arr)
-        print(self.framecount)
+        #print("red", self.red_arr)
+        #print(self.framecount)
         #self.arr = np.insert(self.arr, self.framecount, rgb)
         if self.framecount == 50:
             self.rgb_arr=np.matrix([self.red_arr,self.blue_arr,self.green_arr])
-            print("Array", self.rgb_arr)
-            heartrate = self.get_heartrate(self.rgb_arr)
-            print("--------------------Heartrate----------------", heartrate)
+            #print("Array", self.rgb_arr)
+            #heartrate = self.get_heartrate(self.rgb_arr)
+            #print("--------------------Heartrate----------------", heartrate)
             self.red_arr.clear()
             self.blue_arr.clear()
             self.green_arr.clear()
-            self.rgb_arr.clear()
+            self.rgb_arr=[]
             self.framecount = 0
             # -- In each face, detect eyes
             # eyes = self.eyes_cascade.detectMultiScale(faceROI)
@@ -169,8 +177,8 @@ class camera(object):
         return bandpassfilter_signal
 
 
-cam = camera()
-while True:
-    cam.face_detection()
-    # print(cam.frame)
-    print("--------------------------------")
+#cam = camera()
+#while True:
+#    cam.face_detection()
+#    # print(cam.frame)
+#    print("--------------------------------")

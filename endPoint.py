@@ -1,9 +1,12 @@
 from flask import Flask,render_template,Response
 import cv2
+from flask import jsonify
 from main import camera
+from flask_cors import CORS, cross_origin
 
 app=Flask(__name__)
 VC=camera()
+CORS(app)
 
 
 camera2=cv2.VideoCapture(0)
@@ -40,6 +43,16 @@ def gen(camera):
 def video_feed():
     return Response(gen(VC),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+def getvar(camera):
+    while True:
+        frame = camera.get_variables()
+        return frame
+
+@app.route('/variables')
+def variables():
+    return jsonify({'text': getvar (VC)})  
 
 if __name__ == '__main__':
     app.run(port=3001, threaded=True, use_reloader=False)

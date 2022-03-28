@@ -29,3 +29,20 @@ margin-left: auto;
   width: 50vw;
   height: 75vh;
 }
+
+.heartrate{
+  display:block;
+  margin: 1%;
+  font-size:600%;
+  color: rgb(0, 105, 70);
+}
+
+.rateinfo{
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  display:block;
+  margin: 10px;
+  top:30%;
+  left:40%
+}
