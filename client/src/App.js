@@ -20,32 +20,35 @@ const App = () => {
   <div>
         <div className="homepage">
           <div><Header/></div>
+            <div className="toggle">
+            <CameraToggle/>
+            </div>
           <div className="video">
           <img
             src="http://127.0.0.1:3001/video"
             alt="Video"
           />
-          <div className="camera-toggle">
-            <div className="toggle"></div>
-            <CameraToggle/></div>
-          </div>
           <div className="glassBox"><Box></Box></div>
         </div>
+            </div>
             </div>
             </AuthenticatedTemplate>
             <UnauthenticatedTemplate>
             <div>
              <div className="homepage">
                <div><Header/></div>
+            <div className="toggle">
+            <CameraToggle/>
+            </div>
                <div className="video">
                <img
                  src="http://127.0.0.1:3001/video"
                  alt="Video"
                />
-               </div>
                <div className="glassBox"><Box></Box></div>
              </div>
-                 </div>   
+                 </div> 
+                 </div>  
             </UnauthenticatedTemplate>
             </div>       
    );

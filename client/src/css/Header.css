@@ -23,13 +23,13 @@
   display: block;
   float: right;
   margin-left: auto;
-  margin-right: 10%;
+  margin-right: 4%;
   height: 40%;
   width: auto;
   background-color:#ffffff;
   border-color: #0067b8;
-  border-radius: 8px;
-  outline: 3px;
+  border-radius: 10px;
+  outline: 1px;
   text-align: center;
   overflow: hidden;
   touch-action: manipulation;
@@ -39,8 +39,8 @@
 
 .header button:hover{
   border-color: #0067b8;
-  border-radius: 8px;
-  outline: 3px;
+  border-radius: 10px;
+  outline: 1px;
   color: #0067b8;
   background-color: #ebf0f5;
 }

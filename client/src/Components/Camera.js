@@ -1,18 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import '../css/Camera.css'
-import CameraToggle from './CameraToggle';
+import CameraToggle from "./CameraToggle"
 
 
 const Camera = () => {
     const videoRef = useRef(null);
-    const [isShowVideo, setIsShowVideo] = useState(false);
+    const [camera, setCamera] = useState(false);
     const videoElement = useRef(null);
 
   const stopCam = () => {
     let stream = videoElement.current.stream;
     const tracks = stream.getTracks();
     tracks.forEach(track => track.stop());
-    setIsShowVideo(false);
+    setCamera(false);
 }
 
     useEffect(() => {
@@ -20,7 +20,7 @@ const Camera = () => {
     }, [videoRef]);
 
     const getVideo = () => {
-      setIsShowVideo(true);
+      setCamera(true);
       navigator.mediaDevices
         .getUserMedia({ audio: false, video: {width:(window.innerwidth/2), height: (window.innerwidth/2)} })
         .then(stream => {
@@ -35,28 +35,21 @@ const Camera = () => {
     return(
       <div>
         <div classname="camera">
-          {isShowVideo &&
+          {camera &&
             <video 
               ref={videoRef}
             />
           }
-        </div>
-        <div className='toggle'>
-          <CameraToggle
-          render={({ on, toggle }) => (
-            <div>
-              { on ?
+            <div className="toggle">
+            <CameraToggle/>
+            {camera ?
               <button onClick={getVideo}>Start Video</button>
               :
               <button onClick={stopCam}>Stop Video</button>
             }
-            </div>
-          )}
-          />
-        </div>
-        <button onClick={getVideo}>Start Video</button>
-        <button onClick={stopCam}>Stop Video</button>
-        </div>
+          </div>
+          </div>
+          </div>
     );
 };
   export default Camera;

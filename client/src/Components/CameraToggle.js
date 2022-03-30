@@ -1,17 +1,28 @@
-import React, {Component} from 'react'
-import Switch from 'react-switch'
+import * as React from 'react'
+import Switch from '@mui/material/Switch';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
 
 export default function CameraToggle() {
-    const [cameraOn, setState] = React.useState(true);
 
-    const handleSwitch = (event) => {
-        setState(event.target.checked);
-      };
-    
+  const [camera, setCamera] = React.useState(true);
+
+  const handleChange = (event) => {
+    setCamera(event.target.camera);
+  };
+  
       return (
-        <Switch
-          cameraOn={cameraOn}
-          onChange={handleSwitch}
+        <FormControl component="fieldset">
+        <FormGroup aria-label="position" row>
+        <FormControlLabel
+          value="start"
+          control={<Switch camera={camera}
+          onChange={handleChange} color="primary" />}
+          label="Camera"
+          labelPlacement="start"
         />
+        </FormGroup>
+        </FormControl>
       );
     }

@@ -2,7 +2,6 @@ import React, {Component, useState, useEffect} from "react";
 import {useContext} from 'react';
 import '../css/Header.css'
 import logo from '../assets/mslogo.jpg'
-import { CameraToggle } from "./CameraToggle"
 import { callMsGraph } from "../graph";
 import { ProfileData } from "./ProfileData";
 import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from "@azure/msal-react";
@@ -73,7 +72,7 @@ function RequestProfileData() {
         <div className="signOut"><SignOutButton/></div></div>
          
         :
-        <div className="profile"><div className="username">Sign in to save this data</div>
+        <div className="profile"><div className="username">Sign in to save data</div>
         <div className="signOut"><SignInButton/></div></div>
        // <div className="signIn"><SignInButton /></div>
         }
