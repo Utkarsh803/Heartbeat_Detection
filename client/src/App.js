@@ -36,7 +36,7 @@ const App = () => {
             <UnauthenticatedTemplate>
             <div>
              <div className="homepage">
-               <div><Header/></div>
+              <div><Header/></div>
             <div className="toggle">
             <CameraToggle/>
             </div>

@@ -1,5 +1,6 @@
 .camera{
     resize: both;
+    position: relative;
     display: inline-block;
     margin-top: 90px;
     margin-left: 10px;
@@ -11,6 +12,7 @@
 .toggle{
     display: inline-block;
     position: absolute;
+    color: #0067b8;
     margin-top: 530px;
     margin-left: 590px;
 }
