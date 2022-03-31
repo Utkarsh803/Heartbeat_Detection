@@ -8,7 +8,7 @@
   height: 100px;
   width: fit-content;
   height: fit-content;
-  margin-top: 15%;
+  margin-top: 20%;
 margin-left: auto;
 }
 
@@ -23,9 +23,9 @@ margin-left: auto;
   display: inline-block;
   position:absolute;
   background-color: #f4f4f4;
-  box-shadow: 5px 5px 5px#b3b3b4;
+  box-shadow: 5px 5px 5px #b3b3b4;
   margin-left: 1%;
-  margin-top: 7%;
+  margin-top: 0%;
   width: 50vw;
   height: 75vh;
   z-index: -1;
@@ -46,4 +46,11 @@ margin-left: auto;
   margin: 10px;
   top:30%;
   left:40%
+}
+
+.toggle{
+  display: inline-block;
+  position: absolute;
+  color: #0067b8;
+  margin-top: 6.5%;
 }
