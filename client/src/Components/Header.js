@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { Component, useState, useEffect, useToggle} from "react";
 import { useContext } from 'react';
 import '../css/Header.css'
 import logo from '../assets/mslogo.jpg'
@@ -17,14 +17,11 @@ const Header = (props) => {
 
   const isAuthenticated = useIsAuthenticated();
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen, Open] = useState(false);
+
 
   const togglePopup = () => {
-    setIsOpen(!isOpen);
-
-    setTimeout(() => {
-      setIsOpen(isOpen);
-    }, 4500);
+        setIsOpen(!isOpen)
   }
 
   // Sticky Menu Area
@@ -86,6 +83,7 @@ const Header = (props) => {
           :
           <div className="profile"><div className="username">Sign in to save data</div>
             <div className="signOut"><SignInButton /></div>
+            {/*need to move to authenticated*/}
             <div>
               <input
                 type="button"
@@ -101,6 +99,7 @@ const Header = (props) => {
                   handleClose={togglePopup}
                 />}
             </div>
+            {/*ends here*/}
             <div className="signIn"><SignInButton /></div>
           </div>
         }

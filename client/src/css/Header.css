@@ -134,15 +134,17 @@
 .close-icon {
   content: 'X';
   cursor: pointer;
+  opacity: 0.5;
+  color: #b81500;
   position: fixed;
-  right: 523px;
-  top: 20px;
-  background: rgb(240, 239, 239);
-  width: 18px;
-  height: 18px;
+  right: 522px;
+  top: 14px;
+  background: rgb(250, 199, 199);
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
-  line-height: 14px;
+  line-height: 10px;
   text-align: center;
-  border: 1px solid #0067b8;
-  font-size: 15px;
+  border: 1px solid #b81500;
+  font-size: 12px;
 }
