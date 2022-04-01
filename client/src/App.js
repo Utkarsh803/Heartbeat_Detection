@@ -10,10 +10,24 @@ import Button from "react-bootstrap/Button";
 import { ProfileData } from "./Components/ProfileData";
 import { callMsGraph } from "./graph";
 import CameraToggle from './Components/CameraToggle';
+import {
+	CircularInput,
+	CircularTrack,
+	CircularProgress,
+	CircularThumb
+} from 'react-circular-input'
 
 
 
 const App = () => {
+  
+  
+  const [value, setValue] = useState(0.50)
+  const [heartRate, setheartRate] = React.useState(0);
+  
+  
+  
+  
   return (
 <div>
     <AuthenticatedTemplate>
@@ -45,7 +59,19 @@ const App = () => {
                  src="http://127.0.0.1:3001/video"
                  alt="Video"
                />
-               <div className="glassBox"><Box></Box></div>
+               <div className="glassBox"><Box>
+               
+               <div className="HRbar">
+                 <CircularInput value={value} onChange={setValue}>
+                <CircularTrack strokeWidth={5} stroke="#eee" />
+                <CircularProgress stroke={`hsl(${value * 100}, 100%, 50%)`} />
+              </CircularInput>
+              </div> 
+              <div className="rateinfo">
+              <label className="heartrate">{heartRate}</label>
+              <label >Heart Rate</label>
+              </div>
+                 </Box></div>
              </div>
                  </div> 
                  </div>  

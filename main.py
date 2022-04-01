@@ -82,6 +82,14 @@ class camera(object):
         result=self.heartrate
         return str(result)
 
+    def __del__(self):
+        try: 
+            self.cap.stop()
+            self.cap.stream.release()
+        except:
+            print('probably there\'s no cap yet :(')
+        cv.destroyAllWindows()
+
     def get_heartrate(self, sig):
         dtr_sig = signal.detrend(sig)
         norm_sig = imageManipulation.z_normalize(dtr_sig)
@@ -144,19 +152,18 @@ class camera(object):
                          (self.endX + 10, y + int(self.firstLine) + 10), (255, 0, 0), 2)
         self.framecount = self.framecount + 1
         self.ROI = self.frame[self.startY:self.y + int(self.firstLine), self.startX:self.endX]
-
-
-        self.rgb_arr.append(imageManipulation.calc_avg_col(self.ROI))
-
-        if self.framecount >= 50 and self.framecount%10 == 0:
-
-            heartrate = self.get_heartrate(self.rgb_arr)
-            print("----heartrate----", heartrate)
-        if self.framecount == 200:
-            tmp = self.rgb_arr[100:len(self.rgb_arr)-1]
-            self.rgb_arr.clear()
-            self.rgb_arr = tmp
-            self.framecount = 100
+#
+#        self.rgb_arr.append(imageManipulation.calc_avg_col(self.ROI))
+#
+#        if self.framecount >= 50 and self.framecount%10 == 0:
+#
+ #           heartrate = self.get_heartrate(self.rgb_arr)
+  #          print("----heartrate----", heartrate)
+   #     if self.framecount == 200:
+    #        tmp = self.rgb_arr[100:len(self.rgb_arr)-1]
+     #       self.rgb_arr.clear()
+      #      self.rgb_arr = tmp
+       #     self.framecount = 100
 
         cv.imshow('Capture - Face detection', self.frame)
         return self.frame  # in the form numpy.ndarray
@@ -165,6 +172,6 @@ class camera(object):
 
 
 
-cam = camera()
-while True:
-   cam.face_detection()
+#cam = camera()
+#while True:
+#   cam.face_detection()

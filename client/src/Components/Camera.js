@@ -5,7 +5,7 @@ import CameraToggle from "./CameraToggle"
 
 const Camera = () => {
     const videoRef = useRef(null);
-    const [camera, setCamera] = useState(false);
+    const [camera, setCamera] = useState(true);
     const videoElement = useRef(null);
 
   const stopCam = () => {
@@ -42,11 +42,9 @@ const Camera = () => {
           }
             <div className="toggle">
             <CameraToggle/>
-            {camera ?
-              <button onClick={getVideo}>Start Video</button>
-              :
+        
               <button onClick={stopCam}>Stop Video</button>
-            }
+            
           </div>
           </div>
           </div>

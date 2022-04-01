@@ -8,6 +8,9 @@ app=Flask(__name__)
 VC=camera()
 CORS(app)
 
+global open
+open=1
+
 
 camera2=cv2.VideoCapture(0)
 def generate_frames():
@@ -46,13 +49,33 @@ def video_feed():
 
 
 def getvar(camera):
-    while True:
-        frame = camera.get_variables()
-        return frame
+    global open
+    if open==1:
+        while True:
+            frame = camera.get_variables()
+            return frame
 
 @app.route('/variables')
 def variables():
     return jsonify({'text': getvar (VC)})  
+
+def stopCam(camera):
+        stop = camera.__del__()
+       
+
+@app.route('/stop')
+def stop():
+    global open
+    VC.__del__()
+    open=0
+    print("Deleting...")
+    return "Nothing"
+
+@app.route('/start')
+def start():
+    global open
+    open=1
+    return "Nothing"
 
 if __name__ == '__main__':
     app.run(port=3001, threaded=True, use_reloader=False)
