@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { PageLayout } from "./Components/PageLayout";
 import './App.css';
 import Header from './Components/Header';
@@ -16,17 +16,61 @@ import {
 	CircularProgress,
 	CircularThumb
 } from 'react-circular-input'
-
+import { SaveDataButton } from "./Components/SaveDataButton";
+import Popup from "./Components/Popup";
 
 
 const App = () => {
   
   
-  const [value, setValue] = useState(0.50)
+  const [value, setValue] = useState(1)
   const [heartRate, setheartRate] = React.useState(0);
+  const [color, setColor] = React.useState(10);
+
+
+  /*
+
+  useEffect(() => {
+    const interval = setInterval(() => fetchData(), 5);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+  */
+
+  function getColor(props){
+    const isLoggedIn = props.heartRates;
+    console.log(isLoggedIn);
+    if(isLoggedIn<=59 || isLoggedIn>=101){
+      setColor(10);
+    console.log("set to 10");
+    }
+    else{
+      setColor(100);
+      console.log("set to 100");
+    }
+  }
   
+  const fetchData =  async () => {
+      try {
+          const response = await  fetch('http://127.0.0.1:3001/variables');
+          if (!response.ok) {throw Error(response.statusText);}
+          const json = await response.json();
+          setheartRate(json.text);
+          getColor({heartRate});
+      }
+      catch (error) {console.log("Error"+error);}
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchData();
+    }, 2000)
+    return () => clearInterval(interval)
+  }, []);
   
-  
+
+
   
   return (
 <div>
@@ -42,7 +86,19 @@ const App = () => {
             src="http://127.0.0.1:3001/video"
             alt="Video"
           />
-          <div className="glassBox"><Box></Box></div>
+          <div className="glassBox"><Box>
+            
+          <div className="HRbar">
+                 <CircularInput value={value} onChange={setValue}>
+                <CircularTrack strokeWidth={5} stroke="#eee" />
+                <CircularProgress stroke={`hsl(${value * color}, 100%, 50%)`} />
+              </CircularInput>
+              </div> 
+              <div className="rateinfo">
+              <label className="heartrate">{heartRate}</label>
+              <label className="shiftLeft">Heart Rate</label>
+              </div>
+            </Box></div>
         </div>
             </div>
             </div>
@@ -64,12 +120,12 @@ const App = () => {
                <div className="HRbar">
                  <CircularInput value={value} onChange={setValue}>
                 <CircularTrack strokeWidth={5} stroke="#eee" />
-                <CircularProgress stroke={`hsl(${value * 100}, 100%, 50%)`} />
+                <CircularProgress stroke={`hsl(${value * color}, 100%, 50%)`} />
               </CircularInput>
               </div> 
               <div className="rateinfo">
               <label className="heartrate">{heartRate}</label>
-              <label >Heart Rate</label>
+              <label className="shiftLeft">Heart Rate</label>
               </div>
                  </Box></div>
              </div>

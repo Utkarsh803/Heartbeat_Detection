@@ -76,14 +76,9 @@ const Header = (props) => {
       <header className="header">
         <img src={logo}></img>
         {isAuthenticated ?
-          <div className="profile"><div className="username"><ProfileContent /></div>
+          <div className="profile">
+            <div className="username"><ProfileContent /></div>
             <div className="signOut"><SignOutButton /></div>
-            <div className="saveData"><SaveDataButton /></div>
-          </div>
-          :
-          <div className="profile"><div className="username">Sign in to save data</div>
-            <div className="signOut"><SignInButton /></div>
-            {/*need to move to authenticated*/}
             <div>
               <input
                 type="button"
@@ -99,8 +94,12 @@ const Header = (props) => {
                   handleClose={togglePopup}
                 />}
             </div>
-            {/*ends here*/}
-            <div className="signIn"><SignInButton /></div>
+          </div>
+          :
+          <div className="profile">
+            <div className="Nousername">Sign in to save data</div>
+            <div className="signOut"><SignInButton /></div>
+      
           </div>
         }
       </header>

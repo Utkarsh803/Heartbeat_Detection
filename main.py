@@ -152,18 +152,18 @@ class camera(object):
                          (self.endX + 10, y + int(self.firstLine) + 10), (255, 0, 0), 2)
         self.framecount = self.framecount + 1
         self.ROI = self.frame[self.startY:self.y + int(self.firstLine), self.startX:self.endX]
-#
-#        self.rgb_arr.append(imageManipulation.calc_avg_col(self.ROI))
-#
-#        if self.framecount >= 50 and self.framecount%10 == 0:
-#
- #           heartrate = self.get_heartrate(self.rgb_arr)
-  #          print("----heartrate----", heartrate)
-   #     if self.framecount == 200:
-    #        tmp = self.rgb_arr[100:len(self.rgb_arr)-1]
-     #       self.rgb_arr.clear()
-      #      self.rgb_arr = tmp
-       #     self.framecount = 100
+
+        self.rgb_arr.append(imageManipulation.calc_avg_col(self.ROI))
+
+        if self.framecount >= 50 and self.framecount%10 == 0:
+
+            self.heartrate = (int)(self.get_heartrate(self.rgb_arr))
+            #print("----heartrate----", heartrate)
+        if self.framecount == 200:
+            tmp = self.rgb_arr[100:len(self.rgb_arr)-1]
+            self.rgb_arr.clear()
+            self.rgb_arr = tmp
+            self.framecount = 100
 
         cv.imshow('Capture - Face detection', self.frame)
         return self.frame  # in the form numpy.ndarray
