@@ -17,12 +17,16 @@ const Header = (props) => {
 
   const isAuthenticated = useIsAuthenticated();
 
-  const [isOpen, setIsOpen, Open] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
 
-  const togglePopup = () => {
-        setIsOpen(!isOpen)
+  const openPopup = () => {
+        setIsOpen(true)
   }
+
+  const closePopup = () => {
+    setIsOpen(false)
+}
 
   // Sticky Menu Area
   useEffect(() => {
@@ -84,14 +88,14 @@ const Header = (props) => {
                 type="button"
                 className="saveData"
                 value="Save My Data"
-                onClick={togglePopup}
+                onClick={()=>alert('Your data was saved!')}
               />
               {isOpen &&
                 <Popup
                   content={<>
                     <text>Your data has been saved.</text>
                   </>}
-                  handleClose={togglePopup}
+                  handleClose={closePopup}
                 />}
             </div>
           </div>
