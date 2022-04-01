@@ -1,9 +1,11 @@
 # from _future_ import print_function
+from scipy import signal
+import neurokit2 as nk
 import cv2 as cv
 import argparse
 import imageManipulation
 import numpy as np
-
+import matplotlib.pyplot as plt
 
 class camera(object):
     face_cascade = ''
@@ -80,7 +82,16 @@ class camera(object):
         result=self.heartrate
         return str(result)
 
-
+    def get_heartrate(self, sig):
+        dtr_sig = signal.detrend(sig)
+        norm_sig = imageManipulation.z_normalize(dtr_sig)
+        interpolated = np.hamming(len(norm_sig)) * norm_sig
+        fft = np.fft.rfft(interpolated, n= len(interpolated))
+        threshold = 0.3 * max(abs(fft))
+        peaks = signal.find_peaks(fft,height= threshold)
+        print("Threshold =",threshold,"  Peaks =",len(peaks[0])," framcount =",self.framecount)
+        freq = len(peaks[0]) / (self.framecount/30) # time = num frames / fps
+        return freq * 60
 
     def face_detection(self):
         if not self.cap.isOpened:
@@ -103,8 +114,10 @@ class camera(object):
     def detectAndDisplay(self):
         self.frame_gray = cv.cvtColor(self.frame, cv.COLOR_BGR2GRAY)
         self.frame_gray = cv.equalizeHist(self.frame_gray)
+
         # -- Detect faces
         faces = self.face_cascade.detectMultiScale(self.frame_gray)
+
         for (x, y, w, h) in faces:
             self.y = y
             center = (x + w // 2, y + h // 2)
@@ -131,54 +144,27 @@ class camera(object):
                          (self.endX + 10, y + int(self.firstLine) + 10), (255, 0, 0), 2)
         self.framecount = self.framecount + 1
         self.ROI = self.frame[self.startY:self.y + int(self.firstLine), self.startX:self.endX]
-        # r,b,g=imageManipulation.calc_avg_rgb(self.ROI)
-        # rgb=imageManipulation.sum_rgb_val(r,g,b)
-        #rgb = imageManipulation.get_means(self.ROI)
-        self.red, self.green, self.blue = imageManipulation.get_means(self.ROI)
-        #self.rgb_arr[0].append(red)
-        #self.rgb_arr[1].append(green)
-        #self.rgb_arr[2].append(blue)
-        #print(self.red)
-        self.red_arr.append(self.red)
-        self.green_arr.append(self.green)
-        self.blue_arr.append(self.blue)
-        #print("red", self.red_arr)
-        #print(self.framecount)
-        #self.arr = np.insert(self.arr, self.framecount, rgb)
-        if self.framecount == 50:
-            self.rgb_arr=np.matrix([self.red_arr,self.blue_arr,self.green_arr])
-            #print("Array", self.rgb_arr)
-            #heartrate = self.get_heartrate(self.rgb_arr)
-            #print("--------------------Heartrate----------------", heartrate)
-            self.red_arr.clear()
-            self.blue_arr.clear()
-            self.green_arr.clear()
-            self.rgb_arr=[]
-            self.framecount = 0
-            # -- In each face, detect eyes
-            # eyes = self.eyes_cascade.detectMultiScale(faceROI)
-            # for (x2,y2,w2,h2) in eyes:
-            #    eye_center = (x + x2 + w2//2, y + y2 + h2//2)
-            #    radius = int(round((w2 + h2)*0.25))
-            #    self.frame = cv.circle(self.frame, eye_center, radius, (255, 0, 0 ), 4)
+
+
+        self.rgb_arr.append(imageManipulation.calc_avg_col(self.ROI))
+
+        if self.framecount >= 50 and self.framecount%10 == 0:
+
+            heartrate = self.get_heartrate(self.rgb_arr)
+            print("----heartrate----", heartrate)
+        if self.framecount == 200:
+            tmp = self.rgb_arr[100:len(self.rgb_arr)-1]
+            self.rgb_arr.clear()
+            self.rgb_arr = tmp
+            self.framecount = 100
+
         cv.imshow('Capture - Face detection', self.frame)
         return self.frame  # in the form numpy.ndarray
 
     # END OF CODE
 
-    def get_heartrate(self, rgb):
-        detrend_signal = imageManipulation.detrend_signal(rgb)
-        print("dtsgnl", detrend_signal)
-        normalized_signal = imageManipulation.z_normalize(detrend_signal)
-        print("norm", normalized_signal)
-        ica = imageManipulation.ica(normalized_signal)
-        print("ica", ica)
-        bandpassfilter_signal = imageManipulation.select_component(ica)
-        return bandpassfilter_signal
 
 
-#cam = camera()
-#while True:
-#    cam.face_detection()
-#    # print(cam.frame)
-#    print("--------------------------------")
+cam = camera()
+while True:
+   cam.face_detection()
