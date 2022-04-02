@@ -38,14 +38,13 @@ const App = () => {
   }, []);
   */
 
-  function getColor(props){
-    const isLoggedIn = props.heartRates;
-    console.log(isLoggedIn);
-    if(isLoggedIn<=59 || isLoggedIn>=101){
+  function getColor(heartRate){
+    console.log(heartRate);
+    if(heartRate<=59 ||heartRate>=101){
       setColor(10);
     console.log("set to 10");
     }
-    else{
+    else if(heartRate>=60 ||heartRate<=100){
       setColor(100);
       console.log("set to 100");
     }
@@ -57,7 +56,9 @@ const App = () => {
           if (!response.ok) {throw Error(response.statusText);}
           const json = await response.json();
           setheartRate(json.text);
-          getColor({heartRate});
+          console.log(json.text);
+          getColor(json.text);
+
       }
       catch (error) {console.log("Error"+error);}
   }
