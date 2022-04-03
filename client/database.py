@@ -29,17 +29,17 @@ cursor = conn.cursor()
 def data_entry(email, hb):
     user_Name = email
     user_hb = hb
-    cursor.execute("INSERT INTO TEinfo ( user_Name, user_hb) VALUES( ?, ?)", ( user_Name, user_hb))
+    cursor.execute("INSERT INTO clienthb ( user_Name, user_hb) VALUES( ?, ?)", ( user_Name, user_hb))
     conn.commit()
 
 
 def query_table(email):
-    hbs = cursor.execute('SELECT user_hb FROM TEinfo WHERE user_Name = ?',(email))
+    hbs = cursor.execute('SELECT user_hb FROM clienthb WHERE user_Name = ?',(email))
     rows = cursor.fetchall()
     return rows 
 
 #print fom table
-email = "sdjnsdkjv"
-data_entry(email, 102)
-data = query_table(email)
-print(data[0])
+##email = "sdjnsdkjv"
+#data_entry(email, 102)
+#data = query_table(email)
+#print(data[0])

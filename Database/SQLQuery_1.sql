@@ -1,5 +1,4 @@
-CREATE TABLE hbinfo (
-  user_id INT PRIMARY KEY,
+CREATE TABLE clienthb (
   user_Name NVARCHAR(128) NOT NULL,
   user_hb INT NOT NULL,
 ) 
