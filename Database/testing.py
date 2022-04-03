@@ -26,20 +26,22 @@ cursor = conn.cursor()
 #conn.commit()
 
 
-def data_entry(email, hb):
+def data_entry(email, hb, date):
     user_Name = email
     user_hb = hb
-    cursor.execute("INSERT INTO TEinfo ( user_Name, user_hb) VALUES( ?, ?)", ( user_Name, user_hb))
+    cursor.execute("INSERT INTO testing ( user_Name, user_hb, hb_date) VALUES( ?, ?, ?)", ( user_Name, user_hb, date))
     conn.commit()
 
 
 def query_table(email):
-    hbs = cursor.execute('SELECT user_hb FROM TEinfo WHERE user_Name = ?',(email))
+    hbs = cursor.execute('SELECT user_hb, hb_date, id FROM testing WHERE user_Name = ?',(email))
     rows = cursor.fetchall()
     return rows 
 
 #print fom table
 email = "sdjnsdkjv"
-data_entry(email, 102)
+data_entry(email, 102, '20001001')
 data = query_table(email)
+for dat in data:
+ print(dat)
 print(data[0])
