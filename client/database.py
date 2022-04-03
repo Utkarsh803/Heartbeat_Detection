@@ -25,16 +25,16 @@ cursor = conn.cursor()
 #               ''')
 #conn.commit()
 
-
-def data_entry(email, hb):
+#date in format yyyy-mm-dd
+def data_entry(email, hb, date):
     user_Name = email
     user_hb = hb
-    cursor.execute("INSERT INTO clienthb ( user_Name, user_hb) VALUES( ?, ?)", ( user_Name, user_hb))
+    cursor.execute("INSERT INTO clienthb ( user_Name, user_hb, hd_date) VALUES( ?, ?, ?)", ( user_Name, user_hb, date))
     conn.commit()
 
 
 def query_table(email):
-    hbs = cursor.execute('SELECT user_hb FROM clienthb WHERE user_Name = ?',(email))
+    hbs = cursor.execute('SELECT user_hb,hb_date FROM clienthb WHERE user_Name = ?',(email))
     rows = cursor.fetchall()
     return rows 
 
