@@ -29,25 +29,10 @@ def calc_avg_rgb(img):
     :param img: takes in an image or frame of video
     :return: the average value of the three colour channels
     """
-    red_ch, green_ch, blue_ch = rgb_split(img)
-
-    red = 0
-    blue = 0
-    green = 0
-    count = 0
-
-    for i in range(len(red_ch)):
-        for j in range(len(red_ch[i])):
-            red = red + red_ch[i][j]
-            blue = blue + blue_ch[i][j]
-            green = green + green_ch[i][j]
-            count = count + 1
-
-    red = red / count
-    blue = blue / count
-    green = green / count
-
-    return red, green, blue
+    r = np.mean(img[:, :, 2])
+    g = np.mean(img[:, :, 1])
+    b = np.mean(img[:, :, 0])
+    return r, g, b
 
 
 def calc_avg_col(img):

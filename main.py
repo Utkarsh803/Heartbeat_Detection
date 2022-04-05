@@ -22,14 +22,16 @@ class camera(object):
     y = 0
     firstLine = 0
     endX = 0
+
+
     rgb_arr = []
     red_arr=[]
     blue_arr=[]
     green_arr=[]
-    red=0
-    green=0
-    blue = 0
-    heartrate=0
+    red=0.0
+    green=0.0
+    blue = 0.0
+    heartrate=0.0
 
     def __init__(self):
         self.parser = argparse.ArgumentParser(description='Code for Cascade Classifier tutorial.')
@@ -90,16 +92,33 @@ class camera(object):
             print('probably there\'s no cap yet :(')
         cv.destroyAllWindows()
 
+    def get_freq(self,peaks,fft):
+        maxs = 0.0
+        for i in range(len(peaks)):
+            if fft[peaks[i]] > maxs:
+                maxs = fft[peaks[i]]
+
+        return maxs
+
     def get_heartrate(self, sig):
+        L = len(sig)
+        fps = 50
         dtr_sig = signal.detrend(sig)
-        norm_sig = imageManipulation.z_normalize(dtr_sig)
-        interpolated = np.hamming(len(norm_sig)) * norm_sig
-        fft = np.fft.rfft(interpolated, n= len(interpolated))
-        threshold = 0.3 * max(abs(fft))
-        peaks = signal.find_peaks(fft,height= threshold)
-        print("Threshold =",threshold,"  Peaks =",len(peaks[0])," framcount =",self.framecount)
-        freq = len(peaks[0]) / (self.framecount/30) # time = num frames / fps
-        return freq * 60
+        interpolated = np.hamming(len(dtr_sig)) * dtr_sig
+        norm = interpolated / np.linalg.norm(interpolated)
+        raw = np.fft.rfft(norm*30)
+        freqs = float(fps) / L * np.arange(L / 2 + 1)
+        freqs2 = 60. * freqs
+        fft = np.abs(raw)**2
+        idx = np.where((freqs2 > 50) & (freqs2 < 180))
+        pruned = fft[idx]
+        pfreq = freqs[idx]
+        freqs = pfreq
+        fft = pruned
+        idx2 = np.argmax(pruned)
+        bpm = freqs[idx2]
+
+        return bpm * 60
 
     def face_detection(self):
         if not self.cap.isOpened:
@@ -157,8 +176,8 @@ class camera(object):
 
         if self.framecount >= 50 and self.framecount%10 == 0:
 
-            self.heartrate = (int)(self.get_heartrate(self.rgb_arr))
-            #print("----heartrate----", heartrate)
+            self.heartrate = (self.get_heartrate(self.rgb_arr))
+            print("----heartrate----", self.heartrate)
         if self.framecount == 200:
             tmp = self.rgb_arr[100:len(self.rgb_arr)-1]
             self.rgb_arr.clear()
@@ -172,6 +191,6 @@ class camera(object):
 
 
 
-#cam = camera()
-#while True:
+# cam = camera()
+# while True:
 #   cam.face_detection()
