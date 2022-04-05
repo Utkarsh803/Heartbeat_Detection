@@ -9,6 +9,7 @@
     border-radius: 0.1rem;
     border-bottom: 0.1rem solid rgb(238, 238, 238);
     margin-bottom: 20px;
+    z-index: 2;
 }
 
  .header img {
@@ -67,7 +68,6 @@
 {
     overflow: hidden;
     width: 50%;
-    right:20%;
     text-overflow:ellipsis;
     color: #0067b8;
     white-space: nowrap;

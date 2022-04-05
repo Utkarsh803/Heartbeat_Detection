@@ -1,11 +1,18 @@
+
 from flask import Flask,render_template,Response
 import cv2
 from flask import jsonify
 from main import camera
 from flask_cors import CORS, cross_origin
+from flask import request
+from database import db
+import json
+import pandas as pd
+
 
 app=Flask(__name__)
 VC=camera()
+dbase=db()
 CORS(app)
 
 global open
@@ -59,23 +66,38 @@ def getvar(camera):
 def variables():
     return jsonify({'text': getvar (VC)})  
 
-def stopCam(camera):
-        stop = camera.__del__()
-       
 
-@app.route('/stop')
-def stop():
-    global open
-    VC.__del__()
-    open=0
-    print("Deleting...")
-    return "Nothing"
+@app.route('/post')
+def my_route():
+  email = request.args.get('email', type = str)
+  hr = request.args.get('hr', type = int)
+  dat=request.args.get('dat', type = str)
+  dbase.data_entry(email, hr, dat)
+  data = "success"
+  return jsonify({"text": data})
 
-@app.route('/start')
-def start():
-    global open
-    open=1
-    return "Nothing"
+#http://127.0.0.1:3001/fetch/fadasda
+@app.route('/fetch/<usremail>', methods=['GET'])
+def fetch(usremail):
+  #email = request.args.get('email', type = str)
+  #email="sdjnsdkjv"
+  lis=[['heartbeat', 'date', 'id']]
+  hrtbt=[]
+  dattlist=[]
+  iidList=[]
+  rows=dbase.query_table(usremail)
+  for row in rows:
+      hrt=row[0]
+      hrtbt.append(hrt)
+      datt=row[1]
+      dattlist.append(datt)
+      datt=datt.strftime("%Y-%m-%d")
+      iid=row[2]
+      iidList.append(iid)
+      lis.append([hrt,datt,iid])
+  out = [dict(zip(lis[0], row)) for row in lis[1:]]  
+  return jsonify(out)
+
 
 if __name__ == '__main__':
     app.run(port=3001, threaded=True, use_reloader=False)

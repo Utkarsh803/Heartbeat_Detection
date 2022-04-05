@@ -4,7 +4,7 @@ import './App.css';
 import Header from './Components/Header';
 import Box from '@material-ui/core/Box';
 import Camera from './Components/Camera';
-import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from "@azure/msal-react";
+import { AuthenticatedTemplate, MsalAuthenticationTemplate, UnauthenticatedTemplate, useIsAuthenticated, useMsal} from "@azure/msal-react";
 import { loginRequest } from "./authConfig";
 import Button from "react-bootstrap/Button";
 import { ProfileData } from "./Components/ProfileData";
@@ -17,16 +17,48 @@ import {
 	CircularThumb
 } from 'react-circular-input'
 import { SaveDataButton } from "./Components/SaveDataButton";
-import Popup from "./Components/Popup";
+import { msalConfig } from "./authConfig";
+import ScrollButton from "./Components/ScrollButton";
 
 
-const App = () => {
-  
-  
+ function App  ()  {
+  const isAuthenticated = useIsAuthenticated();
   const [value, setValue] = useState(1)
   const [heartRate, setheartRate] = React.useState(0);
   const [color, setColor] = React.useState(10);
+  const [datt, setDate] = React.useState(0);
+  const [table, setTable] = useState([{"date":"DATE","heartbeat":"HEARTBEAT","id":"ID"}]);
+  const [track, setTrack] = useState('');
+  const [showtable, setshowTable] = useState(false); 
+  const { instance, accounts } = useMsal();
+  const accId = accounts[0] ? accounts[0].username : null;
+  
 
+
+
+   function ProfileContent () {
+    const [graphData, setGraphData] = useState(null);   
+    const name = accounts[0] && accounts[0].username;
+    function RequestProfileData() {
+      const request = {
+        ...loginRequest,
+        account: accounts[0]
+      };
+  
+      // Silently acquires an access token which is then attached to a request for Microsoft Graph data
+      instance.acquireTokenSilent(request).then((response) => {
+        callMsGraph(response.accessToken).then(response => setGraphData(response));
+      }).catch((e) => {
+        instance.acquireTokenPopup(request).then((response) => {
+          callMsGraph(response.accessToken).then(response => setGraphData(response));
+        });
+      });
+    }
+    setName(name);
+    console.log("newname------", name);
+    return name
+  };
+  
 
   /*
 
@@ -49,7 +81,49 @@ const App = () => {
       console.log("set to 100");
     }
   }
-  
+
+  const postHeartrate =  async () => {
+    try {
+        const usrname=accId;
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+        today = yyyy + '-' + mm + '-' + dd;
+        const url='http://127.0.0.1:3001/post?email='+usrname+'&hr='+heartRate+'&dat='+today;
+        const response = await  fetch(url);
+        if (!response.ok) {throw Error(response.statusText);}
+        const json = await response.json();
+        console.log("--------------------------------success", json.text)
+        console.log(json.text);
+        
+      
+    }
+    catch (error) {console.log("Error"+error);}
+}
+
+function setName(name){
+  accId=name;
+}
+
+function setName(){
+  return accId;
+}
+
+const fetchHeartrate = async() => {
+  try {
+      const usrname=accId;
+      const url='http://127.0.0.1:3001/fetch/'+usrname;
+      const response = await  fetch(url);
+      if (!response.ok) {throw Error(response.statusText);}
+      const json = await response.json();
+      setTable(json);
+      console.log("the json ----------------------",json);
+  }
+  catch (error) {console.log("Error"+error);}
+}
+ 
+
   const fetchData =  async () => {
       try {
           const response = await  fetch('http://127.0.0.1:3001/variables');
@@ -58,29 +132,76 @@ const App = () => {
           setheartRate(json.text);
           console.log(json.text);
           getColor(json.text);
-
       }
       catch (error) {console.log("Error"+error);}
   }
 
   useEffect(() => {
     const interval = setInterval(() => {
-      fetchData();
+      fetchData(); 
     }, 2000)
     return () => clearInterval(interval)
   }, []);
-  
 
 
-  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if(track=='done'){
+        setshowTable(true);
+      }
+      if(track=='notDone'){
+        setshowTable(false);
+      }
+    }, 10)
+    return () => clearInterval(interval)
+  }, [track]);
+
+
+
+  function handleClickpost () {
+    postHeartrate();
+    alert("Data saved successfully!");
+  }
+
+  function handleClickfetch () {
+    fetchHeartrate();
+    setTrack("Starting to fetch");
+    setTimeout(()=>{
+      setTrack('done');
+    }, 10)
+    scrollWindow();
+  }
+
+  function handleClickClose () {
+    setTrack("Starting to fetch");
+    setTimeout(()=>{
+      setTrack('notDone');
+    }, 10)
+    scrollWindow();
+  }
+
+  function scrollWindow(){
+      window.scroll({
+        bottom: 50, // or document.scrollingElement || document.body
+        left: 0,
+        behavior: 'smooth'
+      });
+  }
+
+  function fetchDataClick() {
+    handleClickfetch();
+    scrollWindow();
+  }
+
+
   return (
 <div>
     <AuthenticatedTemplate>
   <div>
         <div className="homepage">
           <div><Header/></div>
+          <ScrollButton></ScrollButton>
             <div className="toggle">
-            <CameraToggle/>
             </div>
           <div className="video">
           <img
@@ -99,9 +220,50 @@ const App = () => {
               <label className="heartrate">{heartRate}</label>
               <label className="shiftLeft">Heart Rate</label>
               </div>
-            </Box></div>
+              <button className="butt" onClick={handleClickpost}>Save my Data</button>
+            </Box>
+            </div>          
         </div>
+        {!showtable ? <button  className="fetchdata" onClick={handleClickfetch}>View Your History</button>:null}
+        {showtable ? <button  className="fetchdata" onClick={handleClickClose}>Close</button>:<div></div>}
             </div>
+          {showtable?
+            <div className="see">
+            <h1 className="heading">Your Heart History </h1>
+              {table.map((list)=>{
+                return(
+                    <div className='bookings-table'>
+                      <h1  className='booking-history' style={{
+                            textAlign: "left",
+                            marginLeft: "5px",
+                            marginRight: "16px",
+                            fontWeight: "bold",
+                            maxWidth: "16.5%",
+                            flex: "1.25",
+                        }}>Id: {JSON.stringify(list.id)}</h1>
+                      <h1 className='booking-history'  style={{
+                            textAlign: "left",
+                            marginLeft: "60px",
+                            marginRight: "16px",
+                            fontWeight: "bold",
+                            
+                            flex: "1.25",
+                        }}>Date: {JSON.stringify(list.date)}</h1>
+                      <h1 className='booking-history' style={{
+                            textAlign: "left",
+                            marginLeft: "60px",
+                            marginRight: "16px",
+                            fontWeight: "bold",
+                          
+                            flex: "1.25",
+                        }} >Heartbeat: {JSON.stringify(list.heartbeat)}</h1>
+                        </div>
+                  
+                )
+              })}
+            </div>
+            :
+ <div></div>}
             </div>
             </AuthenticatedTemplate>
             <UnauthenticatedTemplate>
@@ -109,7 +271,6 @@ const App = () => {
              <div className="homepage">
               <div><Header/></div>
             <div className="toggle">
-            <CameraToggle/>
             </div>
                <div className="video">
                <img
@@ -128,7 +289,8 @@ const App = () => {
               <label className="heartrate">{heartRate}</label>
               <label className="shiftLeft">Heart Rate</label>
               </div>
-                 </Box></div>
+                 </Box>
+                 </div>
              </div>
                  </div> 
                  </div>  

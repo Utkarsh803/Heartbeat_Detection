@@ -42,9 +42,11 @@ const Camera = () => {
           }
             <div className="toggle">
             <CameraToggle/>
-        
+            {camera ?
+              <button onClick={getVideo}>Start Video</button>
+              :
               <button onClick={stopCam}>Stop Video</button>
-            
+            }
           </div>
           </div>
           </div>

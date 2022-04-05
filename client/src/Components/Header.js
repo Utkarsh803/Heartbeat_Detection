@@ -83,21 +83,6 @@ const Header = (props) => {
           <div className="profile">
             <div className="username"><ProfileContent /></div>
             <div className="signOut"><SignOutButton /></div>
-            <div>
-              <input
-                type="button"
-                className="saveData"
-                value="Save My Data"
-                onClick={()=>alert('Your data was saved!')}
-              />
-              {isOpen &&
-                <Popup
-                  content={<>
-                    <text>Your data has been saved.</text>
-                  </>}
-                  handleClose={closePopup}
-                />}
-            </div>
           </div>
           :
           <div className="profile">
