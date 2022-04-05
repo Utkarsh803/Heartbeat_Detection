@@ -4,8 +4,7 @@
  */
 
 import { LogLevel } from "@azure/msal-browser";
-require('dotenv').config();
-console.log(process.env);
+
 
 /**
  * Configuration object to be passed to MSAL instance on creation. 
