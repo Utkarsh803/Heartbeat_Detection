@@ -4,6 +4,8 @@
  */
 
 import { LogLevel } from "@azure/msal-browser";
+require('dotenv').config();
+console.log(process.env);
 
 /**
  * Configuration object to be passed to MSAL instance on creation. 
@@ -12,13 +14,13 @@ import { LogLevel } from "@azure/msal-browser";
  */
 export const msalConfig = {
     auth: {
-        clientId: "Id",
-        authority: "Authority",
-        redirectUri: "http://localhost:3000/"
+        clientId: process.env.CLIENT_ID,
+        authority: process.env.AUTH,
+        redirectUri: process.env.URI
     },
     cache: {
         cacheLocation: "sessionStorage", // This configures where your cache will be stored
-        storeAuthStateInCookie: false, // Set this to "true" if you are having issues on IE11 or Edge
+        storeAuthStateInCookie: true, // Set this to "true" if you are having issues on IE11 or Edge
     },
     system: {	
         loggerOptions: {	
@@ -60,5 +62,5 @@ export const loginRequest = {
  * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/resources-and-scopes.md
  */
 export const graphConfig = {
-    graphMeEndpoint:  "endPoint/v1.0/me"
+    graphMeEndpoint: process.env.ENDPOINT
 };
