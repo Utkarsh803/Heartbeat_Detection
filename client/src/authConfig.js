@@ -6,6 +6,7 @@
 import { LogLevel } from "@azure/msal-browser";
 
 
+
 /**
  * Configuration object to be passed to MSAL instance on creation. 
  * For a full list of MSAL.js configuration parameters, visit:
@@ -13,9 +14,9 @@ import { LogLevel } from "@azure/msal-browser";
  */
 export const msalConfig = {
     auth: {
-        clientId: process.env.CLIENT_ID,
-        authority: process.env.AUTH,
-        redirectUri: process.env.URI
+        clientId: "CLIENT_ID",
+        authority: "AUTH",
+        redirectUri: "URI"
     },
     cache: {
         cacheLocation: "sessionStorage", // This configures where your cache will be stored
@@ -61,5 +62,5 @@ export const loginRequest = {
  * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/resources-and-scopes.md
  */
 export const graphConfig = {
-    graphMeEndpoint: process.env.ENDPOINT
+    graphMeEndpoint: "ENDPOINT"
 };
