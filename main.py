@@ -22,16 +22,18 @@ class camera(object):
     y = 0
     firstLine = 0
     endX = 0
-
-
     rgb_arr = []
     red_arr=[]
     blue_arr=[]
     green_arr=[]
-    red=0.0
-    green=0.0
-    blue = 0.0
-    heartrate=0.0
+    red=0
+    green=0
+    window=False
+    blue = 0
+    heartrate=0
+    frames=0
+    finalHr=0
+    heartbeatArray=[]
 
     def __init__(self):
         self.parser = argparse.ArgumentParser(description='Code for Cascade Classifier tutorial.')
@@ -58,25 +60,26 @@ class camera(object):
             exit(0)
         self.ROI = None
         self.heartrate=72
+        self.finalHr=0
+        self.frames=900
         self.startX = 0
         self.startY = 0
         self.y = 0
         self.endX = 0
         self.firstLine = 0
-        self.arr = np.full(
-            shape=(3,50),
-            fill_value=0,
-            dtype=np.int
-        )
+        self.arr =[]
         self.rgb_arr = []
-        self.red_arr=[]
-        self.green_arr=[]
-        self.blue_arr = []
+        self.red_arr= [0] * (self.frames+1)
+        self.green_arr=[0] * (self.frames+1)
+        self.blue_arr = [0] * (self.frames+1)
         self.red=0
         self.green=0
+        self.window=False
         self.blue = 0
         self.framecount = 0
         self.camera_device = self.args.camera
+        self.heartbeatArray=[0] * 20
+        self.hrNum=0
         # -- 2. Read the video stream
         self.cap = cv.VideoCapture(self.camera_device)
 
@@ -87,37 +90,36 @@ class camera(object):
     def __del__(self):
         try: 
             self.cap.stop()
-            self.cap.stream.release()
+            self.cap.release()
         except:
             print('probably there\'s no cap yet :(')
         cv.destroyAllWindows()
 
-    def get_freq(self,peaks,fft):
-        maxs = 0.0
-        for i in range(len(peaks)):
-            if fft[peaks[i]] > maxs:
-                maxs = fft[peaks[i]]
-
-        return maxs
-
     def get_heartrate(self, sig):
-        L = len(sig)
-        fps = 50
+
         dtr_sig = signal.detrend(sig)
-        interpolated = np.hamming(len(dtr_sig)) * dtr_sig
-        norm = interpolated / np.linalg.norm(interpolated)
-        raw = np.fft.rfft(norm*30)
-        freqs = float(fps) / L * np.arange(L / 2 + 1)
+       # print("Detrended",dtr_sig)
+
+        norm_sig = imageManipulation.z_normalize(dtr_sig)
+        #print("normalised", norm_sig)
+       
+        #apply ica       
+        ica_sig=imageManipulation.ica(norm_sig)
+        real_sig=np.dot(ica_sig,norm_sig)
+        
+        #apply fft
+        L=len(real_sig[2])
+        raw = np.fft.rfft(real_sig[2])
+        freqs = float(30) / L * np.arange(L / 2 + 1)
         freqs2 = 60. * freqs
         fft = np.abs(raw)**2
-        idx = np.where((freqs2 > 50) & (freqs2 < 180))
+        idx = np.where((freqs2 > 60) & (freqs2 < 120))
         pruned = fft[idx]
         pfreq = freqs[idx]
         freqs = pfreq
         fft = pruned
         idx2 = np.argmax(pruned)
         bpm = freqs[idx2]
-
         return bpm * 60
 
     def face_detection(self):
@@ -137,6 +139,32 @@ class camera(object):
     def get_fps2(self):
         fps = self.cap.get(cv.CAP_PROP_FPS)
         return fps
+
+    def mostFrequent(self,arr, n):
+        # Sort the array
+        arr.sort()
+    
+        # find the max frequency using
+        # linear traversal
+        max_count = 1; res = arr[0]; curr_count = 1
+        
+        for i in range(1, n):
+            if (arr[i] == arr[i - 1]):
+                curr_count += 1
+                
+            else :
+                if (curr_count > max_count):
+                    max_count = curr_count
+                    res = arr[i - 1]
+                
+                curr_count = 1
+        
+        # If last element is most frequent
+        if (curr_count > max_count):
+            max_count = curr_count
+            res = arr[n - 1]
+        
+        return res
 
     def detectAndDisplay(self):
         self.frame_gray = cv.cvtColor(self.frame, cv.COLOR_BGR2GRAY)
@@ -169,21 +197,68 @@ class camera(object):
             secondLine = 0.55 * totalHeight
             cv.rectangle(self.frame, (self.startX + 10, self.startY + 10),
                          (self.endX + 10, y + int(self.firstLine) + 10), (255, 0, 0), 2)
-        self.framecount = self.framecount + 1
+        if self.framecount < self.frames:
+            self.framecount = self.framecount + 1
+        print("frame", self.framecount)
+        
         self.ROI = self.frame[self.startY:self.y + int(self.firstLine), self.startX:self.endX]
 
-        self.rgb_arr.append(imageManipulation.calc_avg_col(self.ROI))
+        red, green, blue=imageManipulation.calc_avg_rgb(self.ROI)
 
-        if self.framecount >= 50 and self.framecount%10 == 0:
+       # self.rgb_arr.append(imageManipulation.calc_avg_col(self.ROI))
 
-            self.heartrate = (self.get_heartrate(self.rgb_arr))
-            print("----heartrate----", self.heartrate)
-        if self.framecount == 200:
-            tmp = self.rgb_arr[100:len(self.rgb_arr)-1]
-            self.rgb_arr.clear()
-            self.rgb_arr = tmp
-            self.framecount = 100
+        if self.window==False:
+            self.red_arr[self.framecount]=red
+            #print(self.framecount)
+            self.green_arr[self.framecount]=green
+            self.blue_arr[self.framecount]=blue
 
+        if self.window==True:
+            count=1
+            for i in self.red_arr:
+                if count < len(self.red_arr):
+                    self.red_arr[count-1]=self.red_arr[count]
+                # print(self.framecount)
+                    self.green_arr[count-1]=self.green_arr[count]
+                    self.blue_arr[count-1]=self.blue_arr[count]
+                    count=count+1
+                else:
+                    
+                    self.red_arr[count-1]=red
+                    #print(self.framecount)
+                    self.green_arr[count-1]=green
+                    self.blue_arr[count-1]=blue
+            
+
+
+        if self.framecount >=self.frames :
+            self.rgb_arr=np.matrix([self.red_arr,self.blue_arr,self.green_arr])
+           # print(self.rgb_arr)
+            self.heartrate = (int)(self.get_heartrate(self.rgb_arr))
+
+
+            if self.hrNum < 20:
+                self.hrNum=self.hrNum+1
+                self.heartbeatArray[self.hrNum]=self.heartrate
+                self.hrNum=self.hrNum+1
+            if self.hrNum >= 20:
+                count=1
+                for i in self.heartbeatArray:
+                    if count < len(self.heartbeatArray):
+                        self.heartbeatArray[count-1]=self.heartbeatArray[count]
+                        count=count+1
+                    else:
+                        self.heartbeatArray[count-1]=self.heartrate
+            #self.finalHr=self.mostFrequent(self.heartbeatArray, 20)
+            self.finalHr=max(self.heartbeatArray)
+            print("----heartrate----", self.finalHr)
+            self.window=True
+        #if self.framecount == 200:
+        #    tmp = self.rgb_arr[100:len(self.rgb_arr)-1]
+        #    self.rgb_arr.clear()
+        #    self.rgb_arr = tmp
+        #    self.framecount = 100
+        
         cv.imshow('Capture - Face detection', self.frame)
         return self.frame  # in the form numpy.ndarray
 
@@ -191,6 +266,8 @@ class camera(object):
 
 
 
-# cam = camera()
-# while True:
+#cam = camera()
+#while True:
 #   cam.face_detection()
+
+

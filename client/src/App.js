@@ -139,7 +139,7 @@ const fetchHeartrate = async() => {
   useEffect(() => {
     const interval = setInterval(() => {
       fetchData(); 
-    }, 2000)
+    }, 1000)
     return () => clearInterval(interval)
   }, []);
 
@@ -290,6 +290,7 @@ const fetchHeartrate = async() => {
               <label className="shiftLeft">Heart Rate</label>
               </div>
                  </Box>
+                 <div className="message">*Please wait 30 sec for calculations</div>
                  </div>
              </div>
                  </div> 

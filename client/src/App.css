@@ -157,3 +157,9 @@ margin-bottom: 3%;
   cursor: pointer;
   color: #0067b8;
 }
+
+.message{
+  color: green;
+  margin-left: 60%;
+  margin-top: 20%;
+}

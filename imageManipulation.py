@@ -5,7 +5,8 @@ from scipy import signal
 import neurokit2 as nk
 from scipy.fftpack import fft, fftshift
 from sklearn.decomposition import FastICA
-
+import statistics
+from sklearn.preprocessing import normalize
 
 def rgb_split(img):
     """
@@ -29,10 +30,24 @@ def calc_avg_rgb(img):
     :param img: takes in an image or frame of video
     :return: the average value of the three colour channels
     """
-    r = np.mean(img[:, :, 2])
-    g = np.mean(img[:, :, 1])
-    b = np.mean(img[:, :, 0])
-    return r, g, b
+    red_ch, green_ch, blue_ch = rgb_split(img)
+
+    red = 0
+    blue = 0
+    green = 0
+    count = 0
+
+    for i in range(len(red_ch)):
+        for j in range(len(red_ch[i])):
+            red = red + red_ch[i][j]
+            blue = blue + blue_ch[i][j]
+            green = green + green_ch[i][j]
+            count = count + 1
+
+    red = red / count
+    blue = blue / count
+    green = green / count
+    return red, green, blue
 
 
 def calc_avg_col(img):
@@ -125,8 +140,28 @@ def z_normalize(data):
         :return: Xi = (Yi - MUi)/SDi where i = R,G,B signal channels i.e the normalised values of the colour
                 channels
         """
-    new_data = ((data - data.mean()) / data.std())
-    return new_data
+    new_data0 = ((data - data.mean()) / data.std())
+    return new_data0
+
+
+def removeZero(signal):
+    sig0=signal[0]
+    sig0.pop(0)
+
+    sig1=signal[1]
+    sig1.pop(0)
+    
+    sig2=signal[2]
+    sig2.pop(0)
+    
+    rows=3
+    cols=51
+    new_array = [[0]*cols]*rows
+    new_array=[sig0,sig1,sig2]
+    
+    
+    return new_array
+
 
 
 def hamming_window(detr_signal):
@@ -144,7 +179,7 @@ def hamming_window(detr_signal):
 
 
 def ica(data):
-    ica = FastICA(len(data))
+    ica = FastICA(n_components=3)
     ica_signal = ica.fit_transform(data)
     return ica_signal
 
