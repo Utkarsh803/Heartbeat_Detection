@@ -8,7 +8,7 @@
   height: 100px;
   width: fit-content;
   height: fit-content;
-  margin-top: 20%;
+  margin-top: 16%;
   margin-left: auto;
 }
 
@@ -98,7 +98,7 @@
 
 .see{
 margin-left: 5%;
-margin-top: 10%;
+margin-top: 7%;
 
 }
 
@@ -142,11 +142,10 @@ margin-bottom: 3%;
 
 .fetchdata{
   position: absolute;
-  margin-left: -5%;
-  margin-bottom: 20%;
+  margin-left: -6.5%;
   width: 15%;
   height: 5%;
-  margin-top: 50%;
+  margin-top: 45%;
   background-color:#ffffff;
   border: 1.5px solid #0067b8;
   border-radius: 10px;
@@ -162,4 +161,25 @@ margin-bottom: 3%;
   color: green;
   margin-left: 60%;
   margin-top: 20%;
+}
+
+.closeUpdate{
+  position: absolute;
+  margin-left: 38%;
+  width: 100%;
+  margin-top: 1.5%;
+}
+
+.blue{
+  width: 10%;
+  background-color:#ffffff;
+  border: 1.5px solid #0067b8;
+  border-radius: 10px;
+  outline: 1px;
+  text-align: center;
+  overflow: hidden;
+  touch-action: manipulation;
+  cursor: pointer;
+  color: #0067b8;
+  margin-right: 2%;
 }

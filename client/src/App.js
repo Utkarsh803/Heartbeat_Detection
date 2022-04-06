@@ -200,9 +200,6 @@ const fetchHeartrate = async() => {
   <div>
         <div className="homepage">
           <div><Header/></div>
-          <ScrollButton></ScrollButton>
-            <div className="toggle">
-            </div>
           <div className="video">
           <img
             src="http://127.0.0.1:3001/video"
@@ -225,7 +222,12 @@ const fetchHeartrate = async() => {
             </div>          
         </div>
         {!showtable ? <button  className="fetchdata" onClick={handleClickfetch}>View Your History</button>:null}
-        {showtable ? <button  className="fetchdata" onClick={handleClickClose}>Close</button>:<div></div>}
+        {showtable ? 
+        <div className="closeUpdate">
+        <button className="blue" onClick={handleClickClose}>Close</button>
+        <button className="blue" onClick={handleClickfetch}>Update</button>
+        </div>
+        :<div></div>}
             </div>
           {showtable?
             <div className="see">
@@ -296,6 +298,7 @@ const fetchHeartrate = async() => {
                  </div> 
                  </div>  
             </UnauthenticatedTemplate>
+            <ScrollButton></ScrollButton>
             </div>       
    );
   };
