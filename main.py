@@ -34,6 +34,7 @@ class camera(object):
     frames=0
     finalHr=0
     heartbeatArray=[]
+    hrNum=0
 
     def __init__(self):
         self.parser = argparse.ArgumentParser(description='Code for Cascade Classifier tutorial.')
@@ -61,7 +62,7 @@ class camera(object):
         self.ROI = None
         self.heartrate=72
         self.finalHr=0
-        self.frames=150
+        self.frames=300
         self.startX = 0
         self.startY = 0
         self.y = 0
@@ -69,9 +70,9 @@ class camera(object):
         self.firstLine = 0
         self.arr =[]
         self.rgb_arr = []
-        self.red_arr= [0] * (self.frames+1)
-        self.green_arr=[0] * (self.frames+1)
-        self.blue_arr = [0] * (self.frames+1)
+        self.red_arr= [0] * (self.frames)
+        self.green_arr=[0] * (self.frames)
+        self.blue_arr = [0] * (self.frames)
         self.red=0
         self.green=0
         self.window=False
@@ -84,7 +85,7 @@ class camera(object):
         self.cap = cv.VideoCapture(self.camera_device)
 
     def get_variables(self):
-        result=self.heartrate
+        result=self.finalHr
         return str(result)
 
     def __del__(self):
@@ -96,7 +97,9 @@ class camera(object):
         cv.destroyAllWindows()
 
     def get_heartrate(self, sig):
-
+        #if self.framecount>=len(self.red_arr):
+        #    print(sig[1])
+       
         dtr_sig = signal.detrend(sig)
        # print("Detrended",dtr_sig)
 
@@ -140,31 +143,16 @@ class camera(object):
         fps = self.cap.get(cv.CAP_PROP_FPS)
         return fps
 
-    def mostFrequent(self,arr, n):
-        # Sort the array
-        arr.sort()
-    
-        # find the max frequency using
-        # linear traversal
-        max_count = 1; res = arr[0]; curr_count = 1
-        
-        for i in range(1, n):
-            if (arr[i] == arr[i - 1]):
-                curr_count += 1
-                
-            else :
-                if (curr_count > max_count):
-                    max_count = curr_count
-                    res = arr[i - 1]
-                
-                curr_count = 1
-        
-        # If last element is most frequent
-        if (curr_count > max_count):
-            max_count = curr_count
-            res = arr[n - 1]
-        
-        return res
+    def most_frequent(self,List):
+        Fcounter = 0
+        num = List[0]
+        for i in List:
+            curr_frequency = List.count(i)
+            if(curr_frequency> Fcounter):
+                Fcounter = curr_frequency
+                num = i
+        return num
+
 
     def detectAndDisplay(self):
         self.frame_gray = cv.cvtColor(self.frame, cv.COLOR_BGR2GRAY)
@@ -207,7 +195,7 @@ class camera(object):
 
        # self.rgb_arr.append(imageManipulation.calc_avg_col(self.ROI))
 
-        if self.window==False:
+        if self.window==False and self.framecount<len(self.red_arr):
             self.red_arr[self.framecount]=red
             #print(self.framecount)
             self.green_arr[self.framecount]=green
@@ -235,24 +223,38 @@ class camera(object):
             self.rgb_arr=np.matrix([self.red_arr,self.blue_arr,self.green_arr])
            # print(self.rgb_arr)
             self.heartrate = (int)(self.get_heartrate(self.rgb_arr))
+            #print("Latest Heartrate :", self.heartrate)
+            self.window=True
+
+            #print("hrNum :" , self.hrNum)
 
 
             if self.hrNum < 20:
-                self.hrNum=self.hrNum+1
+               # print("goint into less")
                 self.heartbeatArray[self.hrNum]=self.heartrate
                 self.hrNum=self.hrNum+1
+            
             if self.hrNum >= 20:
-                count=1
+                #print("goint into gte")
+                hrcount=1
                 for i in self.heartbeatArray:
-                    if count < len(self.heartbeatArray):
-                        self.heartbeatArray[count-1]=self.heartbeatArray[count]
-                        count=count+1
+                    if hrcount < len(self.heartbeatArray):
+                        self.heartbeatArray[hrcount-1]=self.heartbeatArray[hrcount]
+                        hrcount=hrcount+1
                     else:
-                        self.heartbeatArray[count-1]=self.heartrate
-            self.finalHr=self.mostFrequent(self.heartbeatArray, 20)
-            #self.finalHr=np.mean(self.heartbeatArray)
+                        self.heartbeatArray[hrcount-1]=self.heartrate
+            
+           # print("Array before", self.heartbeatArray)
+           # print("hr number",self.hrNum)
+           
+            #print("Added :", self.heartbeatArray)
+            #self.finalHr=self.most_frequent(self.heartbeatArray)
+            self.finalHr=max(self.heartbeatArray)
+           # print("hr number",self.hrNum)
+           # print("Latest Heartbeat", self.heartrate)
+           # print("Array ", self.heartbeatArray)
             print("----heartrate----", self.finalHr)
-            self.window=True
+            
         #if self.framecount == 200:
         #    tmp = self.rgb_arr[100:len(self.rgb_arr)-1]
         #    self.rgb_arr.clear()
