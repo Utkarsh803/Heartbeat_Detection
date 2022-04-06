@@ -248,8 +248,8 @@ class camera(object):
            # print("hr number",self.hrNum)
            
             #print("Added :", self.heartbeatArray)
-            #self.finalHr=self.most_frequent(self.heartbeatArray)
-            self.finalHr=max(self.heartbeatArray)
+            self.finalHr=self.most_frequent(self.heartbeatArray)
+            #self.finalHr=max(self.heartbeatArray)
            # print("hr number",self.hrNum)
            # print("Latest Heartbeat", self.heartrate)
            # print("Array ", self.heartbeatArray)
