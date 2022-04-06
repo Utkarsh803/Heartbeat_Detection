@@ -249,8 +249,8 @@ class camera(object):
                         count=count+1
                     else:
                         self.heartbeatArray[count-1]=self.heartrate
-            #self.finalHr=self.mostFrequent(self.heartbeatArray, 20)
-            self.finalHr=max(self.heartbeatArray)
+            self.finalHr=self.mostFrequent(self.heartbeatArray, 20)
+            #self.finalHr=np.mean(self.heartbeatArray)
             print("----heartrate----", self.finalHr)
             self.window=True
         #if self.framecount == 200:
