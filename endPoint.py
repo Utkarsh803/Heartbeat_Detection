@@ -95,6 +95,12 @@ def fetch(usremail):
       iid=row[2]
       iidList.append(iid)
       lis.append([hrt,datt,iid])
+  print("real-------------------------",lis)
+  lis.reverse()
+  print("reversed-------------------------",lis)
+  lis=lis[0:10]
+  lis.insert(0,['heartbeat', 'date', 'id'])
+  print("first 10-------------------------",lis)  
   out = [dict(zip(lis[0], row)) for row in lis[1:]]  
   return jsonify(out)
 

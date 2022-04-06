@@ -97,7 +97,7 @@
 }
 
 .see{
-margin-left: 5%;
+margin-left: 2%;
 margin-top: 7%;
 
 }
@@ -111,7 +111,7 @@ margin-top: 7%;
   text-align: left;
   display: flex;
   flex-flow: row wrap;
-  width:45%;
+  width:47%;
   margin: 10px;
   padding: 10px;
 }

@@ -238,7 +238,7 @@ const fetchHeartrate = async() => {
                       <h1  className='booking-history' style={{
                             textAlign: "left",
                             marginLeft: "5px",
-                            marginRight: "16px",
+                            marginRight: "7px",
                             fontWeight: "bold",
                             maxWidth: "16.5%",
                             flex: "1.25",
@@ -246,14 +246,14 @@ const fetchHeartrate = async() => {
                       <h1 className='booking-history'  style={{
                             textAlign: "left",
                             marginLeft: "60px",
-                            marginRight: "16px",
+                            marginRight: "20px",
                             fontWeight: "bold",
-                            
+                            maxWidth: "50%",
                             flex: "1.25",
                         }}>Date: {JSON.stringify(list.date)}</h1>
                       <h1 className='booking-history' style={{
                             textAlign: "left",
-                            marginLeft: "60px",
+                            marginLeft: "50px",
                             marginRight: "16px",
                             fontWeight: "bold",
                           
