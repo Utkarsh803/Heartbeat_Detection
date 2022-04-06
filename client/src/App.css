@@ -97,6 +97,7 @@
 }
 
 .see{
+  flex: 1;
 margin-left: 2%;
 margin-top: 7%;
 
@@ -182,4 +183,15 @@ margin-bottom: 3%;
   cursor: pointer;
   color: #0067b8;
   margin-right: 2%;
+}
+
+.hrchart{
+  display:flex;
+}
+
+.linechart{
+position: relative;
+margin-left: 49%;
+bottom: 60.5%;
+
 }

@@ -19,6 +19,16 @@ import {
 import { SaveDataButton } from "./Components/SaveDataButton";
 import { msalConfig } from "./authConfig";
 import ScrollButton from "./Components/ScrollButton";
+import "./css/styles.css"
+import Chart, {
+  ArgumentAxis,
+  Legend,
+  Series,
+  ValueAxis,
+  Label,
+  Export,
+  Tick,
+} from 'devextreme-react/chart';
 
 
  function App  ()  {
@@ -230,6 +240,7 @@ const fetchHeartrate = async() => {
         :<div></div>}
             </div>
           {showtable?
+          <div className="hrchart">
             <div className="see">
             <h1 className="heading">Your Heart History </h1>
               {table.map((list)=>{
@@ -263,6 +274,38 @@ const fetchHeartrate = async() => {
                   
                 )
               })}
+              <div className="linechart">
+              <Chart
+                title="Heartbeat Trend"
+                dataSource={table}
+                id="chart"
+              >
+
+                <ArgumentAxis>
+                  <Label customizeText={false} />
+                </ArgumentAxis>
+
+                <ValueAxis>
+                  <Tick visible={false} />
+                  <Label visible={false} />
+                </ValueAxis>
+
+                <Series
+                  valueField="heartbeat"
+                  argumentField="date"
+                  type="line"
+                  color="#79cac4"
+                >
+                  <Label visible={true} backgroundColor="#c18e92" />
+                </Series>
+
+                <Legend visible={false} />
+
+                <Export enabled={true} />
+
+              </Chart> 
+              </div>
+            </div>
             </div>
             :
  <div></div>}
