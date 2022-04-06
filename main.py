@@ -61,7 +61,7 @@ class camera(object):
         self.ROI = None
         self.heartrate=72
         self.finalHr=0
-        self.frames=900
+        self.frames=150
         self.startX = 0
         self.startY = 0
         self.y = 0
@@ -199,7 +199,7 @@ class camera(object):
                          (self.endX + 10, y + int(self.firstLine) + 10), (255, 0, 0), 2)
         if self.framecount < self.frames:
             self.framecount = self.framecount + 1
-        print("frame", self.framecount)
+        #print("frame", self.framecount)
         
         self.ROI = self.frame[self.startY:self.y + int(self.firstLine), self.startX:self.endX]
 
