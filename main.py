@@ -1,4 +1,5 @@
 # from _future_ import print_function
+from cProfile import label
 from scipy import signal
 import neurokit2 as nk
 import cv2 as cv
@@ -16,6 +17,7 @@ class camera(object):
     camera_device = ''
     cap = ''
     ROI = None
+    ROI1 = None
     arr = []
     startX = 0
     startY = 0
@@ -60,8 +62,11 @@ class camera(object):
             print('--(!)Error loading eyes cascade')
             exit(0)
         self.ROI = None
-        self.heartrate=72
+
+        self.heartrate=0
         self.finalHr=0
+        self.ROI2=None
+        self.ROI1=None
         self.frames=300
         self.startX = 0
         self.startY = 0
@@ -99,16 +104,58 @@ class camera(object):
     def get_heartrate(self, sig):
         #if self.framecount>=len(self.red_arr):
         #    print(sig[1])
+
+        #time = list(range(1, 101))   
+        #plt.plot(time,  np.squeeze(np.asarray(sig[1])))
+        #plt.title('real')
+        #plt.show()
        
+
+       # smooth_sig=imageManipulation.signal_smooth(sig)
+        
+       
+        #time = list(range(1, 101))   
+        #plt.plot(time, np.squeeze(np.asarray(sig[1])))
+        #plt.title('smoothenes')
+        #plt.show()
+       
+       
+        #print(sig.shape)
+        #print(smooth_sig.shape)
+
+        #smooth=smooth_sig[0]
+        #print(smooth)
+
         dtr_sig = signal.detrend(sig)
        # print("Detrended",dtr_sig)
 
+        #print(dtr_sig.shape)
+       
+        #time = list(range(1, 101))   
+        #plt.plot(time, np.squeeze(np.asarray(dtr_sig[1])))
+        #plt.title('detrended')
+        #plt.show()
+
         norm_sig = imageManipulation.z_normalize(dtr_sig)
+        #print(norm_sig)
         #print("normalised", norm_sig)
+
+       
+        #time = list(range(1, 101))   
+        #plt.plot(time, np.squeeze(np.asarray(norm_sig[1])))
+        #plt.title('Normalised')
+        #plt.show()
+
+        #print(norm_sig.shape)
        
         #apply ica       
         ica_sig=imageManipulation.ica(norm_sig)
         real_sig=np.dot(ica_sig,norm_sig)
+       
+        #time = list(range(1, 101))   
+        #plt.plot(time, np.squeeze(np.asarray(real_sig[1])))
+        #plt.title('OG')
+        #plt.show()
         
         #apply fft
         L=len(real_sig[2])
@@ -183,21 +230,38 @@ class camera(object):
             totalHeight = (y + h) - y
             self.firstLine = 0.20 * totalHeight
             secondLine = 0.55 * totalHeight
-            cv.rectangle(self.frame, (self.startX + 10, self.startY + 10),
+            cv.rectangle(self.frame, (self.startX - 10, self.startY - 10),
                          (self.endX + 10, y + int(self.firstLine) + 10), (255, 0, 0), 2)
+            cv.rectangle(self.frame, (self.startX-30, self.startY + 100),
+                         (self.endX - 90, y + int(self.firstLine) + 110), (255, 0, 0), 2)
+            cv.rectangle(self.frame, (self.startX+80, self.startY + 100),
+                         (self.endX + 20, y + int(self.firstLine) + 110), (255, 0, 0), 2)
         if self.framecount < self.frames:
             self.framecount = self.framecount + 1
         #print("frame", self.framecount)
         
         self.ROI = self.frame[self.startY:self.y + int(self.firstLine), self.startX:self.endX]
 
+        self.ROI1 = self.frame[self.startY+110:self.y + int(self.firstLine)+100, self.startX-20:self.endX-100]
+
+        self.ROI2 = self.frame[self.startY+110:self.y + int(self.firstLine)+100, self.startX+90:self.endX+10]
+
+        
         red, green, blue=imageManipulation.calc_avg_rgb(self.ROI)
+
+        red1, green1, blue1 = imageManipulation.calc_avg_rgb(self.ROI1)
+
+        red2, green2, blue2 = imageManipulation.calc_avg_rgb(self.ROI2)
+
+        red=red+red1+red2/3
+        green=green+green1+green2/3
+        blue=blue+blue1+blue2/3
 
        # self.rgb_arr.append(imageManipulation.calc_avg_col(self.ROI))
 
         if self.window==False and self.framecount<len(self.red_arr):
             self.red_arr[self.framecount]=red
-            #print(self.framecount)
+            print(self.framecount)
             self.green_arr[self.framecount]=green
             self.blue_arr[self.framecount]=blue
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { PageLayout } from "./Components/PageLayout";
 import './App.css';
 import Header from './Components/Header';
@@ -42,6 +42,7 @@ import Chart, {
   const [showtable, setshowTable] = useState(false); 
   const { instance, accounts } = useMsal();
   const accId = accounts[0] ? accounts[0].username : null;
+  const titleRef = useRef();
   
 
 
@@ -169,9 +170,24 @@ const fetchHeartrate = async() => {
 
 
   function handleClickpost () {
+  if(window.confirm("Are you sure you want to save this data?")){
     postHeartrate();
     alert("Data saved successfully!");
+    fetchHeartrate();
+    }
+  else{
+    console.log("noo")
   }
+  }
+
+
+function handleClickDelete(){
+  if(window.confirm("Are you sure you want to delete all your heartbeat history?")){
+      window.alert("Your data was deleted successfully.")
+  }else{
+      console.log("Rejected!!")
+  }
+}
 
   function handleClickfetch () {
     fetchHeartrate();
@@ -179,7 +195,9 @@ const fetchHeartrate = async() => {
     setTimeout(()=>{
       setTrack('done');
     }, 10)
-    scrollWindow();
+    setTimeout(()=>{
+      scrollWindow();
+    }, 100)
   }
 
   function handleClickClose () {
@@ -187,20 +205,19 @@ const fetchHeartrate = async() => {
     setTimeout(()=>{
       setTrack('notDone');
     }, 10)
-    scrollWindow();
   }
 
   function scrollWindow(){
       window.scroll({
-        bottom: 50, // or document.scrollingElement || document.body
-        left: 0,
-        behavior: 'smooth'
+        top: 500, // or document.scrollingElement || document.body
+        left: 0,        
+        behavior: 'auto'      
       });
   }
 
   function fetchDataClick() {
     handleClickfetch();
-    scrollWindow();
+
   }
 
 
@@ -234,13 +251,14 @@ const fetchHeartrate = async() => {
         {!showtable ? <button  className="fetchdata" onClick={handleClickfetch}>View Your History</button>:null}
         {showtable ? 
         <div className="closeUpdate">
+        <button className="blue" onClick={handleClickDelete}>Delete my Data</button> 
         <button className="blue" onClick={handleClickClose}>Close</button>
         <button className="blue" onClick={handleClickfetch}>Update</button>
         </div>
         :<div></div>}
             </div>
           {showtable?
-          <div className="hrchart">
+          <div className="hrchart" ref={titleRef}>
             <div className="see">
             <h1 className="heading">Your Heart History </h1>
               {table.map((list)=>{
@@ -279,10 +297,13 @@ const fetchHeartrate = async() => {
                 title="Heartbeat Trend"
                 dataSource={table}
                 id="chart"
+                
               >
 
-                <ArgumentAxis>
+                <ArgumentAxis inverted={true}>
                   <Label customizeText={false} />
+                  
+                  
                 </ArgumentAxis>
 
                 <ValueAxis>

@@ -7,6 +7,7 @@ from scipy.fftpack import fft, fftshift
 from sklearn.decomposition import FastICA
 import statistics
 from sklearn.preprocessing import normalize
+from scipy.signal import savgol_filter
 
 def rgb_split(img):
     """
@@ -248,3 +249,27 @@ def calc_HR(sig):
     peaks = signal.find_peaks(fft)
     freq = (len(peaks[0]) / (50 / 30))
     return 60 * freq
+
+
+
+def signal_smooth(signa):
+    sig0=signa[0]
+    sig1=signa[1]
+    sig2=signa[2]
+
+    filter_length=20
+    box=np.ones((filter_length))/filter_length
+
+    moving_avg0 = savgol_filter(sig0, 30, 3)
+    moving_avg1 = savgol_filter(sig1, 30, 3)
+    moving_avg2 = savgol_filter(sig2, 30, 3)
+
+
+    #print("shape of moving_avg0", moving_avg0.shape)
+    #print("shape of moving_avg0[0]", moving_avg0[0].shape)
+    #print("avg1",moving_avg0)
+    new_array = []
+    new_array=np.matrix([moving_avg0[0],moving_avg1[0],moving_avg2[0]])
+    #print("Smoothened",new_array)
+    
+    return new_array

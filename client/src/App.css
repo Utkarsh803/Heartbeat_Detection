@@ -34,14 +34,14 @@
 
 .heartrate{
   display:block;
-  font-size:600%;
+  font-size:500%;
   color: rgb(0, 105, 70);
 }
 
 .rateinfo{
   position: relative;
-  margin-top:  -30.5%;
-  margin-left: 40%;
+  margin-top:  -27.5%;
+  margin-left: 38.5%;
 
 }
 
@@ -60,7 +60,7 @@
 
 .shiftLeft{
   position: relative;
-  margin-left: 4%;
+  margin-left: 6%;
 }
 .butt{
   position: absolute;
@@ -118,7 +118,7 @@ margin-top: 7%;
 }
 
 .heading {
-margin-left: 12%;
+margin-left: 12.5%;
 font-size:xx-large;
 color: #0067b8;
 margin-bottom: 3%;
@@ -166,7 +166,7 @@ margin-bottom: 3%;
 
 .closeUpdate{
   position: absolute;
-  margin-left: 38%;
+  margin-left: 32%;
   width: 100%;
   margin-top: 1.5%;
 }
