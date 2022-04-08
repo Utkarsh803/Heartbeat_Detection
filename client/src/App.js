@@ -29,6 +29,8 @@ import Chart, {
   Export,
   Tick,
 } from 'devextreme-react/chart';
+import ReactSignalsPlot from 'react-signals-plot';
+import { green } from "@material-ui/core/colors";
 
 
  function App  ()  {
@@ -40,6 +42,7 @@ import Chart, {
   const [table, setTable] = useState([{"date":"DATE","heartbeat":"HEARTBEAT","id":"ID"}]);
   const [track, setTrack] = useState('');
   const [showtable, setshowTable] = useState(false); 
+  const[curve, setCurve]=useState(null)
   const { instance, accounts } = useMsal();
   const accId = accounts[0] ? accounts[0].username : null;
   const titleRef = useRef();
@@ -134,6 +137,17 @@ const fetchHeartrate = async() => {
   catch (error) {console.log("Error"+error);}
 }
  
+const fetchCurve = async() => {
+  try {
+      const url='http://127.0.0.1:3001/curve';
+      const response = await  fetch(url);
+      if (!response.ok) {throw Error(response.statusText);}
+      const json = await response.json();
+      setCurve(json.text);
+      console.log(json.text);
+  }
+  catch (error) {console.log("Error"+error);}
+}
 
   const fetchData =  async () => {
       try {
@@ -149,8 +163,9 @@ const fetchHeartrate = async() => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      fetchData(); 
-    }, 1000)
+      fetchData();
+      fetchCurve(); 
+    }, 200)
     return () => clearInterval(interval)
   }, []);
 
@@ -220,6 +235,19 @@ function handleClickDelete(){
 
   }
 
+  const series = {
+    data: [
+      {
+        id: 'ECG',
+        values: curve,
+      }
+    ],
+    labels: {
+      x: '',
+      y: ''
+    }
+  };
+
 
   return (
 <div>
@@ -232,8 +260,14 @@ function handleClickDelete(){
             src="http://127.0.0.1:3001/video"
             alt="Video"
           />
-          <div className="glassBox"><Box>
-            
+          <div className="glassBox"><Box>    
+          <ReactSignalsPlot
+                style={ { width: '100%', height: 200 } }
+                data={ series.data }
+                samplesLimit={ 300 }
+                labels={ series.labels }
+                interactive={ true }
+              />         
           <div className="HRbar">
                  <CircularInput value={value} onChange={setValue}>
                 <CircularTrack strokeWidth={5} stroke="#eee" />
@@ -246,6 +280,7 @@ function handleClickDelete(){
               </div>
               <button className="butt" onClick={handleClickpost}>Save my Data</button>
             </Box>
+            {(heartRate==0) ? <div className="message">*Please wait 30 sec for calculations</div>:<div></div>}  
             </div>          
         </div>
         {!showtable ? <button  className="fetchdata" onClick={handleClickfetch}>View Your History</button>:null}
@@ -344,7 +379,13 @@ function handleClickDelete(){
                  alt="Video"
                />
                <div className="glassBox"><Box>
-               
+               <ReactSignalsPlot
+                style={ { width: '100%', height: 200 } }
+                data={ series.data }
+                samplesLimit={ 300 }
+                labels={ series.labels }
+                interactive={ true }
+              />  
                <div className="HRbar">
                  <CircularInput value={value} onChange={setValue}>
                 <CircularTrack strokeWidth={5} stroke="#eee" />
@@ -356,7 +397,7 @@ function handleClickDelete(){
               <label className="shiftLeft">Heart Rate</label>
               </div>
                  </Box>
-                 <div className="message">*Please wait 30 sec for calculations</div>
+                {(heartRate==0) ? <div className="message">*Please wait 30 sec for calculations</div>:<div></div>}                 
                  </div>
              </div>
                  </div> 

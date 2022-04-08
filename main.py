@@ -37,6 +37,7 @@ class camera(object):
     finalHr=0
     heartbeatArray=[]
     hrNum=0
+    curve=[]
 
     def __init__(self):
         self.parser = argparse.ArgumentParser(description='Code for Cascade Classifier tutorial.')
@@ -86,12 +87,19 @@ class camera(object):
         self.camera_device = self.args.camera
         self.heartbeatArray=[0] * 20
         self.hrNum=0
+        self.curve=[]
         # -- 2. Read the video stream
         self.cap = cv.VideoCapture(self.camera_device)
 
     def get_variables(self):
         result=self.finalHr
         return str(result)
+
+    def get_curve(self):
+        if len(self.curve):
+            return self.curve
+        else:
+            return [0]
 
     def __del__(self):
         try: 
@@ -111,7 +119,8 @@ class camera(object):
         #plt.show()
        
 
-       # smooth_sig=imageManipulation.signal_smooth(sig)
+        smooth_sig=imageManipulation.signal_smooth(sig)
+       
         
        
         #time = list(range(1, 101))   
@@ -126,7 +135,8 @@ class camera(object):
         #smooth=smooth_sig[0]
         #print(smooth)
 
-        dtr_sig = signal.detrend(sig)
+        dtr_sig = signal.detrend(smooth_sig)
+
        # print("Detrended",dtr_sig)
 
         #print(dtr_sig.shape)
@@ -139,6 +149,7 @@ class camera(object):
         norm_sig = imageManipulation.z_normalize(dtr_sig)
         #print(norm_sig)
         #print("normalised", norm_sig)
+        self.curve=norm_sig
 
        
         #time = list(range(1, 101))   
@@ -151,6 +162,8 @@ class camera(object):
         #apply ica       
         ica_sig=imageManipulation.ica(norm_sig)
         real_sig=np.dot(ica_sig,norm_sig)
+        
+        
        
         #time = list(range(1, 101))   
         #plt.plot(time, np.squeeze(np.asarray(real_sig[1])))
@@ -261,7 +274,7 @@ class camera(object):
 
         if self.window==False and self.framecount<len(self.red_arr):
             self.red_arr[self.framecount]=red
-            print(self.framecount)
+           # print(self.framecount)
             self.green_arr[self.framecount]=green
             self.blue_arr[self.framecount]=blue
 

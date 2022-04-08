@@ -8,6 +8,7 @@ from flask import request
 from database import db
 import json
 import pandas as pd
+import numpy as np 
 
 
 app=Flask(__name__)
@@ -65,6 +66,26 @@ def getvar(camera):
 @app.route('/variables')
 def variables():
     return jsonify({'text': getvar (VC)})  
+
+
+#http://127.0.0.1:3001/fetch/fadasda
+@app.route('/curve')
+def fetchCurve():
+  #email = request.args.get('email', type = str)
+  #email="sdjnsdkjv"
+  signal=VC.get_curve()
+  list=[]
+  count=1
+  if (len(signal)>2):
+    signal=signal[2]
+    for i in signal:
+        d={'x':count, 'y':i}
+        count=count+1
+        list.append(d)
+    return jsonify({"text":list})
+  else:
+    list=[{"x":0, "y":0}]  
+    return jsonify({"text":list})
 
 
 @app.route('/post')
