@@ -232,30 +232,30 @@ class camera(object):
             secondLine = 0.55 * totalHeight
             cv.rectangle(self.frame, (self.startX - 10, self.startY - 10),
                          (self.endX + 10, y + int(self.firstLine) + 10), (255, 0, 0), 2)
-            cv.rectangle(self.frame, (self.startX-30, self.startY + 100),
-                         (self.endX - 90, y + int(self.firstLine) + 110), (255, 0, 0), 2)
-            cv.rectangle(self.frame, (self.startX+80, self.startY + 100),
-                         (self.endX + 20, y + int(self.firstLine) + 110), (255, 0, 0), 2)
+            #cv.rectangle(self.frame, (self.startX-30, self.startY + 100),
+             #            (self.endX - 90, y + int(self.firstLine) + 110), (255, 0, 0), 2)
+            #cv.rectangle(self.frame, (self.startX+80, self.startY + 100),
+            #             (self.endX + 20, y + int(self.firstLine) + 110), (255, 0, 0), 2)
         if self.framecount < self.frames:
             self.framecount = self.framecount + 1
         #print("frame", self.framecount)
         
         self.ROI = self.frame[self.startY:self.y + int(self.firstLine), self.startX:self.endX]
 
-        self.ROI1 = self.frame[self.startY+110:self.y + int(self.firstLine)+100, self.startX-20:self.endX-100]
+        #self.ROI1 = self.frame[self.startY+110:self.y + int(self.firstLine)+100, self.startX-20:self.endX-100]
 
-        self.ROI2 = self.frame[self.startY+110:self.y + int(self.firstLine)+100, self.startX+90:self.endX+10]
+       # self.ROI2 = self.frame[self.startY+110:self.y + int(self.firstLine)+100, self.startX+90:self.endX+10]
 
         
         red, green, blue=imageManipulation.calc_avg_rgb(self.ROI)
 
-        red1, green1, blue1 = imageManipulation.calc_avg_rgb(self.ROI1)
+       # red1, green1, blue1 = imageManipulation.calc_avg_rgb(self.ROI1)
 
-        red2, green2, blue2 = imageManipulation.calc_avg_rgb(self.ROI2)
+       # red2, green2, blue2 = imageManipulation.calc_avg_rgb(self.ROI2)
 
-        red=red+red1+red2/3
-        green=green+green1+green2/3
-        blue=blue+blue1+blue2/3
+        #red=red+red1+red2/3
+        #green=green+green1+green2/3
+        #blue=blue+blue1+blue2/3
 
        # self.rgb_arr.append(imageManipulation.calc_avg_col(self.ROI))
 
