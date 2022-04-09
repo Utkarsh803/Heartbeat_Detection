@@ -1,5 +1,5 @@
 # from _future_ import print_function
-from cProfile import label
+
 from scipy import signal
 import neurokit2 as nk
 import cv2 as cv
@@ -7,6 +7,7 @@ import argparse
 import imageManipulation
 import numpy as np
 import matplotlib.pyplot as plt
+import time
 
 class camera(object):
     face_cascade = ''
@@ -38,6 +39,10 @@ class camera(object):
     heartbeatArray=[]
     hrNum=0
     curve=[]
+    interval=0
+    prev_frame_time = 0
+    new_frame_time = 0
+    framesPerSecond=0
 
     def __init__(self):
         self.parser = argparse.ArgumentParser(description='Code for Cascade Classifier tutorial.')
@@ -63,7 +68,7 @@ class camera(object):
             print('--(!)Error loading eyes cascade')
             exit(0)
         self.ROI = None
-
+        self.framesPerSecond=0
         self.heartrate=0
         self.finalHr=0
         self.ROI2=None
@@ -88,11 +93,14 @@ class camera(object):
         self.heartbeatArray=[0] * 20
         self.hrNum=0
         self.curve=[]
+        self.interval=0
+        self.prev_frame_time = 0
+        self.new_frame_time = 0
         # -- 2. Read the video stream
         self.cap = cv.VideoCapture(self.camera_device)
 
     def get_variables(self):
-        result=self.finalHr
+        result=self.heartrate
         return str(result)
 
     def get_curve(self):
@@ -110,70 +118,17 @@ class camera(object):
         cv.destroyAllWindows()
 
     def get_heartrate(self, sig):
-        #if self.framecount>=len(self.red_arr):
-        #    print(sig[1])
-
-        #time = list(range(1, 101))   
-        #plt.plot(time,  np.squeeze(np.asarray(sig[1])))
-        #plt.title('real')
-        #plt.show()
-       
-
         smooth_sig=imageManipulation.signal_smooth(sig)
-       
-        
-       
-        #time = list(range(1, 101))   
-        #plt.plot(time, np.squeeze(np.asarray(sig[1])))
-        #plt.title('smoothenes')
-        #plt.show()
-       
-       
-        #print(sig.shape)
-        #print(smooth_sig.shape)
-
-        #smooth=smooth_sig[0]
-        #print(smooth)
-
         dtr_sig = signal.detrend(smooth_sig)
-
-       # print("Detrended",dtr_sig)
-
-        #print(dtr_sig.shape)
-       
-        #time = list(range(1, 101))   
-        #plt.plot(time, np.squeeze(np.asarray(dtr_sig[1])))
-        #plt.title('detrended')
-        #plt.show()
-
         norm_sig = imageManipulation.z_normalize(dtr_sig)
-        #print(norm_sig)
-        #print("normalised", norm_sig)
         self.curve=norm_sig
+        norm_sig=norm_sig.transpose()
+        real_sig=imageManipulation.ica(norm_sig)
 
-       
-        #time = list(range(1, 101))   
-        #plt.plot(time, np.squeeze(np.asarray(norm_sig[1])))
-        #plt.title('Normalised')
-        #plt.show()
-
-        #print(norm_sig.shape)
-       
-        #apply ica       
-        ica_sig=imageManipulation.ica(norm_sig)
-        real_sig=np.dot(ica_sig,norm_sig)
-        
-        
-       
-        #time = list(range(1, 101))   
-        #plt.plot(time, np.squeeze(np.asarray(real_sig[1])))
-        #plt.title('OG')
-        #plt.show()
-        
         #apply fft
-        L=len(real_sig[2])
-        raw = np.fft.rfft(real_sig[2])
-        freqs = float(30) / L * np.arange(L / 2 + 1)
+        L=len(real_sig[:,2])
+        raw = np.fft.rfft(real_sig[:,2])
+        freqs = float(self.framesPerSecond) / L * np.arange(L / 2 + 1)
         freqs2 = 60. * freqs
         fft = np.abs(raw)**2
         idx = np.where((freqs2 > 60) & (freqs2 < 120))
@@ -183,6 +138,8 @@ class camera(object):
         fft = pruned
         idx2 = np.argmax(pruned)
         bpm = freqs[idx2]
+        #print(bpm*60)
+        #print(self.get_fps2)
         return bpm * 60
 
     def face_detection(self):
@@ -191,6 +148,15 @@ class camera(object):
             return -2
         # while True:
         ret, self.frame = self.cap.read()
+        self.new_frame_time = time.time()
+        fps = 1/(self.new_frame_time-self.prev_frame_time)
+        #print("FPS:", fps)
+        fps = int(fps)
+        self.framesPerSecond=fps
+        fps = "FPS: "+str(fps)
+        font = cv.FONT_HERSHEY_SIMPLEX
+        cv.putText(self.frame, fps, (7, 70), font, 1, (100, 255, 0), 3, cv.LINE_AA)
+        self.prev_frame_time = self.new_frame_time
         if self.frame is None:
             print('--(!) No captured self.frame -- Break!')
             return -1
@@ -279,6 +245,7 @@ class camera(object):
             self.blue_arr[self.framecount]=blue
 
         if self.window==True:
+            self.interval=self.interval+1
             count=1
             for i in self.red_arr:
                 if count < len(self.red_arr):
@@ -287,8 +254,7 @@ class camera(object):
                     self.green_arr[count-1]=self.green_arr[count]
                     self.blue_arr[count-1]=self.blue_arr[count]
                     count=count+1
-                else:
-                    
+                else: 
                     self.red_arr[count-1]=red
                     #print(self.framecount)
                     self.green_arr[count-1]=green
@@ -299,45 +265,43 @@ class camera(object):
         if self.framecount >=self.frames :
             self.rgb_arr=np.matrix([self.red_arr,self.blue_arr,self.green_arr])
            # print(self.rgb_arr)
-            self.heartrate = (int)(self.get_heartrate(self.rgb_arr))
+            if self.interval>=self.framesPerSecond or self.window==False:
+                self.heartrate = (int)(self.get_heartrate(self.rgb_arr))
+                self.interval=0
+
+               # if self.hrNum < 20:
+               # print("goint into less")
+               #     self.heartbeatArray[self.hrNum]=self.heartrate
+               #     self.hrNum=self.hrNum+1
+            
+               # if self.hrNum >= 20:
+                    #print("goint into gte")
+                #    hrcount=1
+                #    for i in self.heartbeatArray:
+                #        if hrcount < len(self.heartbeatArray):
+                #            self.heartbeatArray[hrcount-1]=self.heartbeatArray[hrcount]
+                #            hrcount=hrcount+1
+                #        else:
+                #            self.heartbeatArray[hrcount-1]=self.heartrate
+                
+               # self.finalHr=self.most_frequent(self.heartbeatArray)
+                #self.finalHr=max(self.heartbeatArray)
+               # print(self.heartbeatArray)
+           
             #print("Latest Heartrate :", self.heartrate)
             self.window=True
 
-            #print("hrNum :" , self.hrNum)
-
-
-            if self.hrNum < 20:
-               # print("goint into less")
-                self.heartbeatArray[self.hrNum]=self.heartrate
-                self.hrNum=self.hrNum+1
-            
-            if self.hrNum >= 20:
-                #print("goint into gte")
-                hrcount=1
-                for i in self.heartbeatArray:
-                    if hrcount < len(self.heartbeatArray):
-                        self.heartbeatArray[hrcount-1]=self.heartbeatArray[hrcount]
-                        hrcount=hrcount+1
-                    else:
-                        self.heartbeatArray[hrcount-1]=self.heartrate
-            
+            #print("hrNum :" , self.hrNum)            
            # print("Array before", self.heartbeatArray)
            # print("hr number",self.hrNum)
            
             #print("Added :", self.heartbeatArray)
-            self.finalHr=self.most_frequent(self.heartbeatArray)
-            #self.finalHr=max(self.heartbeatArray)
+            
            # print("hr number",self.hrNum)
            # print("Latest Heartbeat", self.heartrate)
            # print("Array ", self.heartbeatArray)
-            print("----heartrate----", self.finalHr)
-            
-        #if self.framecount == 200:
-        #    tmp = self.rgb_arr[100:len(self.rgb_arr)-1]
-        #    self.rgb_arr.clear()
-        #    self.rgb_arr = tmp
-        #    self.framecount = 100
-        
+          #  print("----Chosen heartrate----", self.heartrate)
+
         cv.imshow('Capture - Face detection', self.frame)
         return self.frame  # in the form numpy.ndarray
 

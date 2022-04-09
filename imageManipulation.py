@@ -260,9 +260,9 @@ def signal_smooth(signa):
     filter_length=20
     box=np.ones((filter_length))/filter_length
 
-    moving_avg0 = savgol_filter(sig0, 20, 3)
-    moving_avg1 = savgol_filter(sig1, 20, 3)
-    moving_avg2 = savgol_filter(sig2, 20, 3)
+    moving_avg0 = savgol_filter(sig0, 5, 3)
+    moving_avg1 = savgol_filter(sig1, 5, 3)
+    moving_avg2 = savgol_filter(sig2, 5, 3)
 
 
     #print("shape of moving_avg0", moving_avg0.shape)

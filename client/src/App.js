@@ -39,7 +39,7 @@ import { green } from "@material-ui/core/colors";
   const [heartRate, setheartRate] = React.useState(0);
   const [color, setColor] = React.useState(10);
   const [datt, setDate] = React.useState(0);
-  const [table, setTable] = useState([{"date":"DATE","heartbeat":"HEARTBEAT","id":"ID"}]);
+  const [table, setTable] = useState([]);
   const [track, setTrack] = useState('');
   const [showtable, setshowTable] = useState(false); 
   const[curve, setCurve]=useState(null)
@@ -165,7 +165,7 @@ const fetchCurve = async() => {
     const interval = setInterval(() => {
       fetchData();
       fetchCurve(); 
-    }, 200)
+    }, 300)
     return () => clearInterval(interval)
   }, []);
 
@@ -292,7 +292,7 @@ function handleClickDelete(){
         </div>
         :<div></div>}
             </div>
-          {showtable?
+          {showtable && table ?
           <div className="hrchart" ref={titleRef}>
             <div className="see">
             <h1 className="heading">Your Heart History </h1>
