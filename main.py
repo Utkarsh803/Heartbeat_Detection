@@ -156,6 +156,8 @@ class camera(object):
         fps = "FPS: "+str(fps)
         font = cv.FONT_HERSHEY_SIMPLEX
         cv.putText(self.frame, fps, (7, 70), font, 1, (100, 255, 0), 3, cv.LINE_AA)
+        text= "Please stay still"
+        cv.putText(self.frame, text, (7, 470), font, 1, (100, 255, 0), 3, cv.LINE_AA)
         self.prev_frame_time = self.new_frame_time
         if self.frame is None:
             print('--(!) No captured self.frame -- Break!')
