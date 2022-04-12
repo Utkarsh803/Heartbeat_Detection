@@ -42,7 +42,7 @@ This application aims to detect heartbeat via Frontal Face Video and provides ac
 ### Video Demonstration:  
 https://youtu.be/Tzwx9WraMEw
 
-## Software Engineering Project - Group 15
+## Software Engineering Project - Group 14
 - Imogen Green (greeni@tcd.ie - 17326096)
 - Utkarsh Gupta (guptau@tcd.ie - 19312536)
 - Matthew Grouse (grousem@tcd.ie - 19335171)
