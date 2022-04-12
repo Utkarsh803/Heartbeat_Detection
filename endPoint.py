@@ -68,7 +68,7 @@ def variables():
     return jsonify({'text': getvar (VC)})  
 
 
-#http://127.0.0.1:3001/fetch/fadasda
+#http://127.0.0.1:3001/curve
 @app.route('/curve')
 def fetchCurve():
   #email = request.args.get('email', type = str)
@@ -116,12 +116,9 @@ def fetch(usremail):
       iid=row[2]
       iidList.append(iid)
       lis.append([hrt,datt,iid])
-  print("real-------------------------",lis)
   lis.reverse()
-  print("reversed-------------------------",lis)
   lis=lis[0:10]
   lis.insert(0,['heartbeat', 'date', 'id'])
-  print("first 10-------------------------",lis)  
   out = [dict(zip(lis[0], row)) for row in lis[1:]]  
   return jsonify(out)
 

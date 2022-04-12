@@ -1,70 +1,52 @@
-# Getting Started with Create React App
+# **Software Engineering Group Project: Group 14 - DETECTING HEARTBEAT VIA COLOUR AND/OR MOTION MAGNIFICATION**
+**Team Members:** Imogen Green, Utkarsh Gupta, Matthew Grouse, Dishant Tekwani, Max Cunningham, Victoria Fabijaniak, Niall Connolly .
+**Demonstrator:** Matt Murtagh.  
+**Client:** Serkan Ozkul and Andrew Quirk - Microsoft .
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Build on localhost
+1. Clone the repo: 
+```
+git clone https://github.com/Utkarsh803/Heartbeat_Detection
+```
 
-## Available Scripts
+2. Install dependencies
+```
+npm install
+cd client && npm install
 
-In the project directory, you can run:
+May need manual installing:
+cd client
+npm i devextreme-react
+npm i react-circular-input
+npm i --save react-signals-plot
 
-### `npm start`
+Authentication and database required to be set up, but are not required for basic functionality
+See here: https://docs.microsoft.com/en-us/azure/active-directory/develop/tutorial-v2-react
+https://docs.microsoft.com/en-us/azure/azure-sql/virtual-machines/windows/sql-vm-create-portal-quickstart
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+3. Start the server
+```
+cd ..
+python endPoint.py
 
-### `npm test`
+cd client
+npm start
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## App Functionality
+### Description
+This application aims to detect heartbeat via Frontal Face Video and provides accurate results upto 4 BPM (tested on 8 subjects) in suitable environment and light.
 
-### `npm run build`
+### Video Demonstration:  
+https://youtu.be/Tzwx9WraMEw
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Software Engineering Project - Group 15
+- Imogen Green (greeni@tcd.ie - 17326096)
+- Utkarsh Gupta (guptau@tcd.ie - 19312536)
+- Matthew Grouse (grousem@tcd.ie - 19335171)
+- Max Cunningham(mcunnin8@tcd.ie - 20333171)
+- Niall Connolly(connoln4@tcd.ie - 20332921)
+- Victoria Fabijaniak(fabijanw@tcd.ie -20332659)
+- Dishant Tekwani(tekwanid@tcd.ie -20309212)

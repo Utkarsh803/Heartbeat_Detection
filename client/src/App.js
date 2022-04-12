@@ -1,23 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
-import { PageLayout } from "./Components/PageLayout";
 import './App.css';
 import Header from './Components/Header';
 import Box from '@material-ui/core/Box';
-import Camera from './Components/Camera';
 import { AuthenticatedTemplate, MsalAuthenticationTemplate, UnauthenticatedTemplate, useIsAuthenticated, useMsal} from "@azure/msal-react";
 import { loginRequest } from "./authConfig";
-import Button from "react-bootstrap/Button";
-import { ProfileData } from "./Components/ProfileData";
 import { callMsGraph } from "./graph";
-import CameraToggle from './Components/CameraToggle';
 import {
 	CircularInput,
 	CircularTrack,
-	CircularProgress,
-	CircularThumb
-} from 'react-circular-input'
-import { SaveDataButton } from "./Components/SaveDataButton";
-import { msalConfig } from "./authConfig";
+	CircularProgress
+} from 'react-circular-input';
 import ScrollButton from "./Components/ScrollButton";
 import "./css/styles.css"
 import Chart, {
@@ -30,15 +22,12 @@ import Chart, {
   Tick,
 } from 'devextreme-react/chart';
 import ReactSignalsPlot from 'react-signals-plot';
-import { green } from "@material-ui/core/colors";
 
 
  function App  ()  {
-  const isAuthenticated = useIsAuthenticated();
   const [value, setValue] = useState(1)
   const [heartRate, setheartRate] = React.useState(0);
   const [color, setColor] = React.useState(10);
-  const [datt, setDate] = React.useState(0);
   const [table, setTable] = useState([]);
   const [track, setTrack] = useState('');
   const [showtable, setshowTable] = useState(false); 
@@ -68,31 +57,16 @@ import { green } from "@material-ui/core/colors";
         });
       });
     }
-    setName(name);
-    console.log("newname------", name);
     return name
   };
   
 
-  /*
-
-  useEffect(() => {
-    const interval = setInterval(() => fetchData(), 5);
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-  */
-
   function getColor(heartRate){
-    console.log(heartRate);
     if(heartRate<=59 ||heartRate>=101){
       setColor(10);
-    console.log("set to 10");
     }
     else if(heartRate>=60 ||heartRate<=100){
       setColor(100);
-      console.log("set to 100");
     }
   }
 
@@ -106,23 +80,13 @@ import { green } from "@material-ui/core/colors";
         today = yyyy + '-' + mm + '-' + dd;
         const url='http://127.0.0.1:3001/post?email='+usrname+'&hr='+heartRate+'&dat='+today;
         const response = await  fetch(url);
-        if (!response.ok) {throw Error(response.statusText);}
-        const json = await response.json();
-        console.log("--------------------------------success", json.text)
-        console.log(json.text);
-        
+        if (!response.ok) {throw Error(response.statusText);}     
       
     }
     catch (error) {console.log("Error"+error);}
 }
 
-function setName(name){
-  accId=name;
-}
 
-function setName(){
-  return accId;
-}
 
 const fetchHeartrate = async() => {
   try {
@@ -132,7 +96,6 @@ const fetchHeartrate = async() => {
       if (!response.ok) {throw Error(response.statusText);}
       const json = await response.json();
       setTable(json);
-      console.log("the json ----------------------",json);
   }
   catch (error) {console.log("Error"+error);}
 }
@@ -144,7 +107,6 @@ const fetchCurve = async() => {
       if (!response.ok) {throw Error(response.statusText);}
       const json = await response.json();
       setCurve(json.text);
-      console.log(json.text);
   }
   catch (error) {console.log("Error"+error);}
 }
@@ -155,7 +117,6 @@ const fetchCurve = async() => {
           if (!response.ok) {throw Error(response.statusText);}
           const json = await response.json();
           setheartRate(json.text);
-          console.log(json.text);
           getColor(json.text);
       }
       catch (error) {console.log("Error"+error);}
@@ -191,7 +152,7 @@ const fetchCurve = async() => {
     fetchHeartrate();
     }
   else{
-    console.log("noo")
+    /* ignore */ 
   }
   }
 
@@ -200,7 +161,7 @@ function handleClickDelete(){
   if(window.confirm("Are you sure you want to delete all your heartbeat history?")){
       window.alert("Your data was deleted successfully.")
   }else{
-      console.log("Rejected!!")
+     /* ignore */
   }
 }
 
@@ -224,7 +185,7 @@ function handleClickDelete(){
 
   function scrollWindow(){
       window.scroll({
-        top: 500, // or document.scrollingElement || document.body
+        top: 500, 
         left: 0,        
         behavior: 'auto'      
       });
@@ -331,14 +292,10 @@ function handleClickDelete(){
               <Chart
                 title="Heartbeat Trend"
                 dataSource={table}
-                id="chart"
-                
+                id="chart" 
               >
-
                 <ArgumentAxis inverted={true}>
-                  <Label customizeText={false} />
-                  
-                  
+                  <Label customizeText={false} />    
                 </ArgumentAxis>
 
                 <ValueAxis>
@@ -408,15 +365,5 @@ function handleClickDelete(){
    );
   };
 
-
-/*
-pageLayout
-<AuthenticatedTemplate>
-  **code**    
-</AuthenticatedTemplate>
-      <UnauthenticatedTemplate>
-                <h5 className="card-title">Please sign-in to see your profile information.</h5>
-            </UnauthenticatedTemplate>
-*/
 export default App;
 

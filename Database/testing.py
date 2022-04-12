@@ -1,11 +1,11 @@
 import pyodbc
 import sqlite3
 
-server = 'hbdetect.database.windows.net'
-database = 'ClientHeartbeats'
-username = 'Group14'
-password = 'HeartbeatDetect14'   
-driver= '{ODBC Driver 17 for SQL Server}'
+server = ''
+database = ''
+username = ''
+password = ''   
+driver= ''
 #connects with database
 with pyodbc.connect('DRIVER='+driver+';SERVER=tcp:'+server+';PORT=1433;DATABASE='+database+';UID='+username+';PWD='+ password) as conn:
     with conn.cursor() as cursor:

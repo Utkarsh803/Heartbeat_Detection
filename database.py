@@ -4,11 +4,11 @@ import sqlite3
 class db(object):
 
     def __init__(self):
-        self.server = 'hbdetect.database.windows.net'
-        self.database = 'ClientHeartbeats'
-        self.username = 'Group14'
-        self.password = 'HeartbeatDetect14'   
-        self.driver= '{ODBC Driver 17 for SQL Server}'
+        self.server = ''
+        self.database = ''
+        self.username = ''
+        self.password = ''   
+        self.driver= ''
         #connects with database
         with pyodbc.connect('DRIVER='+self.driver+';SERVER=tcp:'+self.server+';PORT=1433;DATABASE='+self.database+';UID='+self.username+';PWD='+ self.password) as self.conn:
             with self.conn.cursor() as cursor:

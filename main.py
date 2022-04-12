@@ -150,7 +150,6 @@ class camera(object):
         ret, self.frame = self.cap.read()
         self.new_frame_time = time.time()
         fps = 1/(self.new_frame_time-self.prev_frame_time)
-        #print("FPS:", fps)
         fps = int(fps)
         self.framesPerSecond=fps
         fps = "FPS: "+str(fps)
@@ -189,7 +188,6 @@ class camera(object):
         for (x, y, w, h) in faces:
             self.y = y
             center = (x + w // 2, y + h // 2)
-            # self.frame = cv.ellipse(self.frame, center, (w//2, h//2), 0, 0, 360, (255, 0, 255), 4)
             faceROI = self.frame_gray[y:y + h, x:x + w]
             startpointX = (x + w) - x
             areaNeedX = 0.50 * startpointX
@@ -210,36 +208,20 @@ class camera(object):
             secondLine = 0.55 * totalHeight
             cv.rectangle(self.frame, (self.startX - 10, self.startY - 10),
                          (self.endX + 10, y + int(self.firstLine) + 10), (255, 0, 0), 2)
-            #cv.rectangle(self.frame, (self.startX-30, self.startY + 100),
-             #            (self.endX - 90, y + int(self.firstLine) + 110), (255, 0, 0), 2)
-            #cv.rectangle(self.frame, (self.startX+80, self.startY + 100),
-            #             (self.endX + 20, y + int(self.firstLine) + 110), (255, 0, 0), 2)
+
         if self.framecount < self.frames:
             self.framecount = self.framecount + 1
-        #print("frame", self.framecount)
+
         
         self.ROI = self.frame[self.startY:self.y + int(self.firstLine), self.startX:self.endX]
 
-        #self.ROI1 = self.frame[self.startY+110:self.y + int(self.firstLine)+100, self.startX-20:self.endX-100]
-
-       # self.ROI2 = self.frame[self.startY+110:self.y + int(self.firstLine)+100, self.startX+90:self.endX+10]
 
         
         red, green, blue=imageManipulation.calc_avg_rgb(self.ROI)
 
-       # red1, green1, blue1 = imageManipulation.calc_avg_rgb(self.ROI1)
-
-       # red2, green2, blue2 = imageManipulation.calc_avg_rgb(self.ROI2)
-
-        #red=red+red1+red2/3
-        #green=green+green1+green2/3
-        #blue=blue+blue1+blue2/3
-
-       # self.rgb_arr.append(imageManipulation.calc_avg_col(self.ROI))
 
         if self.window==False and self.framecount<len(self.red_arr):
             self.red_arr[self.framecount]=red
-           # print(self.framecount)
             self.green_arr[self.framecount]=green
             self.blue_arr[self.framecount]=blue
 
@@ -249,13 +231,11 @@ class camera(object):
             for i in self.red_arr:
                 if count < len(self.red_arr):
                     self.red_arr[count-1]=self.red_arr[count]
-                # print(self.framecount)
                     self.green_arr[count-1]=self.green_arr[count]
                     self.blue_arr[count-1]=self.blue_arr[count]
                     count=count+1
                 else: 
                     self.red_arr[count-1]=red
-                    #print(self.framecount)
                     self.green_arr[count-1]=green
                     self.blue_arr[count-1]=blue
             
@@ -263,18 +243,15 @@ class camera(object):
 
         if self.framecount >=self.frames :
             self.rgb_arr=np.matrix([self.red_arr,self.blue_arr,self.green_arr])
-           # print(self.rgb_arr)
             if self.interval>=12 or self.window==False:
                 self.heartrate = (int)(self.get_heartrate(self.rgb_arr))
                 self.interval=0
 
                 if self.hrNum < 10:
-                    #print("goint into less")
                     self.heartbeatArray[self.hrNum]=self.heartrate
                     self.hrNum=self.hrNum+1
             
                 if self.hrNum >= 10:
-                    #print("goint into gte")
                     hrcount=1
                     for i in self.heartbeatArray:
                         if hrcount < len(self.heartbeatArray):
@@ -285,21 +262,10 @@ class camera(object):
                 
                 self.finalHr=self.most_frequent(self.heartbeatArray)
                # self.finalHr=max(self.heartbeatArray)
-               # print(self.heartbeatArray)
-           
-            #print("Latest Heartrate :", self.heartrate)
+
             self.window=True
 
-            #print("hrNum :" , self.hrNum)            
-           # print("Array before", self.heartbeatArray)
-           # print("hr number",self.hrNum)
-           
-            #print("Added :", self.heartbeatArray)
-            
-           # print("hr number",self.hrNum)
-           # print("Latest Heartbeat", self.heartrate)
-           # print("Array ", self.heartbeatArray)
-          #  print("----Chosen heartrate----", self.heartrate)
+
 
         cv.imshow('Capture - Face detection', self.frame)
         return self.frame  # in the form numpy.ndarray
