@@ -57,4 +57,8 @@ https://youtu.be/Tzwx9WraMEw
 - Victoria Fabijaniak(fabijanw@tcd.ie -20332659)
 - Dishant Tekwani(tekwanid@tcd.ie -20309212)
 
+## References
+ - Real Time Heart Rate Monitoring From Facial RGB Color Video Using Webcam by H. Rahman, M.U. Ahmed, S. Begum, P. Funk
+ - Non-contact, automated cardiac pulse measurements using video imaging and blind source separation by Ming-Zher Poh, Daniel J. McDuff, and Rosalind W. Picard
+
 *readings taken after input signal stabilizes
