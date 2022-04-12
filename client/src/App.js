@@ -165,7 +165,7 @@ const fetchCurve = async() => {
     const interval = setInterval(() => {
       fetchData();
       fetchCurve(); 
-    }, 300)
+    }, 1000)
     return () => clearInterval(interval)
   }, []);
 

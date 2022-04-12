@@ -73,7 +73,7 @@ class camera(object):
         self.finalHr=0
         self.ROI2=None
         self.ROI1=None
-        self.frames=300
+        self.frames=360
         self.startX = 0
         self.startY = 0
         self.y = 0
@@ -90,17 +90,17 @@ class camera(object):
         self.blue = 0
         self.framecount = 0
         self.camera_device = self.args.camera
-        self.heartbeatArray=[0] * 20
+        self.heartbeatArray=[0] * 10
         self.hrNum=0
         self.curve=[]
         self.interval=0
         self.prev_frame_time = 0
         self.new_frame_time = 0
         # -- 2. Read the video stream
-        self.cap = cv.VideoCapture(self.camera_device)
+        self.cap = cv.VideoCapture(0)
 
     def get_variables(self):
-        result=self.heartrate
+        result=self.finalHr
         return str(result)
 
     def get_curve(self):
@@ -118,29 +118,29 @@ class camera(object):
         cv.destroyAllWindows()
 
     def get_heartrate(self, sig):
-        smooth_sig=imageManipulation.signal_smooth(sig)
-        dtr_sig = signal.detrend(smooth_sig)
-        norm_sig = imageManipulation.z_normalize(dtr_sig)
-        self.curve=norm_sig
-        norm_sig=norm_sig.transpose()
-        real_sig=imageManipulation.ica(norm_sig)
+       # smooth_sig=imageManipulation.signal_smooth(sig)
+        
+        #detrend signal
+        dtr_sig = signal.detrend(sig)
 
-        #apply fft
-        L=len(real_sig[:,2])
-        raw = np.fft.rfft(real_sig[:,2])
-        freqs = float(self.framesPerSecond) / L * np.arange(L / 2 + 1)
-        freqs2 = 60. * freqs
-        fft = np.abs(raw)**2
-        idx = np.where((freqs2 > 60) & (freqs2 < 120))
-        pruned = fft[idx]
-        pfreq = freqs[idx]
-        freqs = pfreq
-        fft = pruned
-        idx2 = np.argmax(pruned)
-        bpm = freqs[idx2]
-        #print(bpm*60)
-        #print(self.get_fps2)
-        return bpm * 60
+        #normalize
+        norm_sig = imageManipulation.z_normalize(dtr_sig)
+        self.curve=norm_sig 
+       
+        #get source signals 
+        norm_sig=np.transpose(norm_sig)
+        real_sig=imageManipulation.ica(norm_sig)
+        
+        #calculate fft
+        fft = np.abs(np.fft.fft(real_sig, axis=0))**2
+        freq = np.fft.fftfreq(self.frames, 1.0 / self.framesPerSecond)
+        maxPower = np.max(fft, axis=1)
+        idx = np.where((freq >= 1) & (freq <= 2))
+        Pwr = maxPower[idx]
+        Freqs = freq[idx]
+        Iddx = np.argmax(Pwr)
+        hr = Freqs[Iddx]
+        return hr*60
 
     def face_detection(self):
         if not self.cap.isOpened:
@@ -167,9 +167,6 @@ class camera(object):
         return jpeg.tobytes()
         # break
 
-    def get_fps2(self):
-        fps = self.cap.get(cv.CAP_PROP_FPS)
-        return fps
 
     def most_frequent(self,List):
         Fcounter = 0
@@ -267,27 +264,27 @@ class camera(object):
         if self.framecount >=self.frames :
             self.rgb_arr=np.matrix([self.red_arr,self.blue_arr,self.green_arr])
            # print(self.rgb_arr)
-            if self.interval>=self.framesPerSecond or self.window==False:
+            if self.interval>=12 or self.window==False:
                 self.heartrate = (int)(self.get_heartrate(self.rgb_arr))
                 self.interval=0
 
-               # if self.hrNum < 20:
-               # print("goint into less")
-               #     self.heartbeatArray[self.hrNum]=self.heartrate
-               #     self.hrNum=self.hrNum+1
+                if self.hrNum < 10:
+                    #print("goint into less")
+                    self.heartbeatArray[self.hrNum]=self.heartrate
+                    self.hrNum=self.hrNum+1
             
-               # if self.hrNum >= 20:
+                if self.hrNum >= 10:
                     #print("goint into gte")
-                #    hrcount=1
-                #    for i in self.heartbeatArray:
-                #        if hrcount < len(self.heartbeatArray):
-                #            self.heartbeatArray[hrcount-1]=self.heartbeatArray[hrcount]
-                #            hrcount=hrcount+1
-                #        else:
-                #            self.heartbeatArray[hrcount-1]=self.heartrate
+                    hrcount=1
+                    for i in self.heartbeatArray:
+                        if hrcount < len(self.heartbeatArray):
+                            self.heartbeatArray[hrcount-1]=self.heartbeatArray[hrcount]
+                            hrcount=hrcount+1
+                        else:
+                            self.heartbeatArray[hrcount-1]=self.heartrate
                 
-               # self.finalHr=self.most_frequent(self.heartbeatArray)
-                #self.finalHr=max(self.heartbeatArray)
+                self.finalHr=self.most_frequent(self.heartbeatArray)
+               # self.finalHr=max(self.heartbeatArray)
                # print(self.heartbeatArray)
            
             #print("Latest Heartrate :", self.heartrate)
