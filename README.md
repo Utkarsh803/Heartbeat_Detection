@@ -12,6 +12,7 @@ git clone https://github.com/Utkarsh803/Heartbeat_Detection
 2. Install dependencies
 ```
 npm install
+pip install -r requirements.txt
 cd client && npm install
 
 May need manual installing:
@@ -21,15 +22,20 @@ npm i react-circular-input
 npm i --save react-signals-plot
 
 Authentication and database required to be set up, but are not required for basic functionality
+For Microsoft Authentication Library MSAL, add information in Heartbeat_Detection/client/src/authConfig.js
 See here: https://docs.microsoft.com/en-us/azure/active-directory/develop/tutorial-v2-react
+
+For Database, add information in Heartbeat_Detection/database.py
 https://docs.microsoft.com/en-us/azure/azure-sql/virtual-machines/windows/sql-vm-create-portal-quickstart
 
 ```
 
 3. Start the server
 ```
-cd ..
-python endPoint.py
+
+cd Heartbeat_Detection
+python endpointbase.py (without the database)
+python endPoint.py (with the database)
 
 cd client
 npm start

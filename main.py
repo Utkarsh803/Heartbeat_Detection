@@ -1,12 +1,10 @@
 # from _future_ import print_function
 
 from scipy import signal
-import neurokit2 as nk
 import cv2 as cv
 import argparse
 import imageManipulation
 import numpy as np
-import matplotlib.pyplot as plt
 import time
 
 class camera(object):

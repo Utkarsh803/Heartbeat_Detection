@@ -1,14 +1,8 @@
 # returns the 3 separate colour channels of the image
-import cv2
 import numpy as np
-from scipy import signal
-import neurokit2 as nk
-from scipy.fftpack import fft, fftshift
 from sklearn.decomposition import FastICA
-import statistics
-from sklearn.preprocessing import normalize
 from scipy.signal import savgol_filter
-from sklearn.preprocessing import normalize
+
 
 def rgb_split(img):
     """
