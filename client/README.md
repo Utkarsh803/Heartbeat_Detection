@@ -42,7 +42,7 @@ npm start
 
 ## App Functionality
 ### Description
-This application aims to detect heartbeat via Frontal Face Video and provides accurate results upto 4 BPM (tested on 8 subjects) in suitable environment and light.
+This application aims to detect heartbeat via Frontal Face Video and provides accurate results with error margin <= 4 BPM* (tested on 8 subjects) in suitable environment and light.
 
 ### Video Demonstration:  
 https://youtu.be/Tzwx9WraMEw
@@ -55,3 +55,5 @@ https://youtu.be/Tzwx9WraMEw
 - Niall Connolly(connoln4@tcd.ie - 20332921)
 - Victoria Fabijaniak(fabijanw@tcd.ie -20332659)
 - Dishant Tekwani(tekwanid@tcd.ie -20309212)
+
+*readings taken after input signal stabilizes
